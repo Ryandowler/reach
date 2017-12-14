@@ -1,0 +1,702 @@
+<!-- CHANGE THIS- change the ugly comments /remove inline css & js / use css instead of br tags / tidy code -->
+<style>
+
+.profile-index{
+	/*background-color: #DFF4F5;*/
+	color: #00b3fe; 
+	/*margin-left:5px;*/
+	border: solid 1px #384452;
+	border-radius: 5px;
+}
+
+.moveUpOnHover:hover{
+	margin-bottom: 10px;
+}
+
+/* style for error message passed from controller
+   when user tries to acces non existing record */
+.noOrgsError{
+	background-color: #FFC64A ;
+	margin-left: -10px;
+	cursor: pointer; cursor: hand; 
+}
+.noOrgsError h2, h3{margin-left: -10px;}
+.noOrgsError span:hover{color: #DFF4F5;}
+/* ./error message */
+
+/* scrollboxes */
+/* The heart of the matter */
+.row {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.col-md-3 {
+  display: inline-block;
+  float: none;
+}
+/* -end  scrollboxes */
+.loveBtn{
+    font-size: 1.2em;
+    color:white;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+.loveBtn:hover, .unloveBtn:hover{
+    font-size: 1.8em;
+    color:red;
+}
+.unloveBtn{
+    font-size: 1.2em;
+    color:orange;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+</style>
+
+<h1 class="current-category">
+	<% if params[:category]%>
+ 		<%= params[:category] %>
+ 	<% else %>
+		<h1> Front Feed  </h1>
+
+		<!-- Delete all the votes for all the ogs (once per day)-->
+		<% @time_now =  Time.now.strftime(" %H %M") %>
+		<!-- creates a time variable and only stores the hour and min-->
+		<% @when_to_delete = Time.new(2017, 1, 1, 20, 55).strftime(" %H %M") %>
+
+		<!-- check if its time to reset the likes (delete them all) -->
+		<% if @time_now == @when_to_delete  %>
+			<% delete_the_votes %>
+		<% end %>
+ 		<hr>
+ 	<% end %>
+ </h1>
+
+<% if @books.count == 0 %>
+	<h1> There are no Organizations to show </h1><br><br>
+	<hr>
+	<table style="width:100%">
+	  <tr>
+	    <td>Okay then, </td>
+	    <td><%= link_to "Bring me to the Home Page", root_path %></td>
+	  </tr>
+	  <tr>
+	    <td></td> <!-- To create the positioning nessesary -->
+	    <td>
+	    <%= link_to "Bring me to my Profile", 
+	    	user_profile_path(current_user.id) %>
+	  </tr>
+	</table>
+<% else %>
+
+<!--  For Reach Production  
+i need similar code for when hosted
+
+location_info = request.location
+
+@locations = Location.near([location_info.latitude, location_info.longitude], radius_distance_you_want_to_include)
+-->
+
+	<% if params[:category]%> <!-- check if category is being viewed (in the params) -->
+		<!-- ++++++++++++++++++ CATEGORY VIEW ++++++++++++++++++++ -->
+		<% @books.each do |book| %>
+				<%= link_to book_path(book) do %>
+					<div class="col-md-3 profile-index" style="overflow: hidden; min-height: 450px; max-height: 450px;">
+						<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+							<h4 style="font-size: 14pt">
+							<%= truncate(book.title, :length => 27, :omission => '...')%>
+							</h4>
+						</div>
+						<div style="border-bottom: 1px solid red; margin-bottom:10px; max-width: 260px; max-height: 260px; min-width: 260px; min-height: 260px;" class="test" >
+						<%= image_tag book.my_file.thumb.url, class: "org_img" %>
+						<br><br>
+					</div>
+						<div style=" max-height: 100px; min-height: 100px; overflow: hidden; white-space: normal; text-align: left;"> 
+							<%=  truncate(book.description, :length => 130, :omission => '... (continued)') %>
+						</div>
+					</div>
+				<% end %><!-- end of link-->
+		<% end %><!-- end of loop -->
+		<!-- end- ++++++++++++++++++ CATEGORY VIEW ++++++++++++++++++++ -->
+	<% else %>
+			<!-- +++++++++++ SECTIONS +++++++++++ -->
+				<!-- new to Reach -->
+				<% if @books_no_order %>
+					<div class="container testimonial-group">
+						<h1 style="color: orange; margin-left: -10px;">
+							New to Reach
+							<i>
+								<text style="font-size: 11pt; color: black;">- Some of the most recent Organizations to join Reach lately</text>
+							</i>
+						</h1>
+						<div class="row text-center scrollBar_nice2">
+								<% @books_no_order.limit(10).shuffle.each do |book| %>
+									<%= link_to book_path(book) do %>
+										<div class="col-md-3 profile-index moveUpOnHover grad1" style="overflow: hidden; min-height: 450px; max-height: 450px;">
+											<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+												<h4 style="font-size: 14pt">
+												<%= truncate(book.title, :length => 27, :omission => '...')%>
+												</h4>
+											</div>
+											<div style="border-bottom: 1px solid red; margin-bottom:10px; max-width: 260px; max-height: 260px; min-width: 260px; min-height: 260px;" class="test" >
+												<!-- default image -->
+												<% if File.exist?(book.my_file.thumb.path.to_s) %>
+													<%= image_tag book.my_file.thumb.url, class: "org_img" %>
+												<% else %>
+													<img src="/default_org_img.png">
+												<% end %>
+												<br><br>
+											</div>
+											<div style=" max-height: 100px; min-height: 100px; overflow: hidden; white-space: normal; text-align: left;"> 
+												<%=  truncate(book.description, :length => 130, :omission => '... (continued)') %>
+											</div>
+											<!-- User has already voted-->
+											<% if user_signed_in? %>
+												<% if @user.voted_as_when_voted_for book %>
+													<%= link_to dislike_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+												    	<span class="glyphicon glyphicon-remove unloveBtn"> </span> 
+													<% end %> <!-- end of link -->
+												<!-- User has NOT voted-->
+												<% else %>
+													<%= link_to like_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+													    <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+													<% end %>
+												<% end %>
+											<!-- user not logged in -->
+											<% else %>
+												<%= link_to new_user_session_path do  %>
+													Login to 'Love' <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+												<% end %>
+											<% end %>
+											<!-- output the like count -->
+											&nbsp; (<%= book.get_upvotes.size %> - Reach Reputation)
+										</div>
+									<% end %><!-- end of link-->
+							<% end %><!-- end of loop -->
+
+							<!-- SECTION link-->
+							<%= link_to "books/newest" do %>
+								<div class="col-md-3 profile-index" style=" background-color: #384452; overflow: hidden; min-height: 450px; max-height: 450px;">
+									<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+										<h4 style="font-size: 24pt" class="white_font">
+										Continue Viewing:
+										</h4>
+									</div>
+									<div style="border-bottom: 1px solid white; margin-top:100px; max-width: 260px; max-height: 210px; min-width: 260px; min-height: 210px; font-weight: 800px;" class="test" >
+										<h3> New Organizations </h3>
+										<img src="/assets/forward.png">
+										
+									</div>
+									<div style=" overflow: hidden; white-space: normal; text-align: left; padding-bottom: 20px; padding-top: 10px;" > 
+										This quick link will bring you to a place full of the
+										<text class="orange_font">Newest organizations to join Reach</text>
+									</div>
+								</div>
+							<% end %><!-- end of SECTION link-->
+						</div>
+					</div>
+				<% end %><!-- end of checking iv var is not empty -->
+				<!-- end- new to Reach -->
+
+				<!-- needs love -->
+				<div class="container testimonial-group">
+					<h1 style="color: orange;  margin-left: -10px;">
+						Needs some Love
+						<i>
+							<text style="font-size: 11pt; color: black;">
+								- Organizations that havent been interacted with as much as others today
+							</text>
+						</i>
+					</h1>
+					<div class="row text-center scrollBar_nice2">
+						<% @books.limit(10).each do |book| %>
+							<!-- getting the daily view count of the current organization being looped -->
+							<% @tempb = book.impressionist_count(:start_date=>Date.today) %>
+							<!-- output the info if that daily count is less than 10 -->
+							<% if @tempb < 5 %>
+								<%= link_to book_path(book) do %>
+									<div class="col-md-3 profile-index moveUpOnHover grad2" style="overflow: hidden; min-height: 450px; max-height: 450px;">
+										<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+											<h4 style="font-size: 14pt">
+											<%= truncate(book.title, :length => 27, :omission => '...')%>
+											</h4>
+										</div>
+										<div style="border-bottom: 1px solid red; margin-bottom:10px; max-width: 260px; max-height: 260px; min-width: 260px; min-height: 260px;" class="test" >
+											<!-- default image -->
+											<% if File.exist?(book.my_file.thumb.path.to_s) %>
+												<%= image_tag book.my_file.thumb.url, class: "org_img" %>
+											<% else %>
+												<img src="/default_org_img.png">
+											<% end %>
+										<br><br>
+									</div>
+										<div style=" max-height: 100px; min-height: 100px; overflow: hidden; white-space: normal; text-align: left;"> 
+											<%=  truncate(book.description, :length => 130, :omission => '... (continued)') %>
+											<%= @tempb %>
+										</div>
+										<% if user_signed_in? %>
+											<!-- User has already voted-->
+											<% if @user.voted_as_when_voted_for book %>
+												<%= link_to dislike_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+											    	<span class="glyphicon glyphicon-remove unloveBtn"> </span> 
+												<% end %> <!-- end of link -->
+											<!-- User has NOT voted-->
+											<% else %>
+												<%= link_to like_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+												    <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+												<% end %>
+											<% end %>
+										 <!-- user not logged in -->
+										<% else %>
+											<%= link_to new_user_session_path do  %>
+												Login to 'Love' <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+											<% end %>
+										<% end %>
+										<!-- output the like count -->
+										&nbsp; (<%= book.get_upvotes.size %> - Reach Reputation)
+									</div>
+								<% end %><!-- end of link-->
+							<% end %><!-- end of check (checked to se if daily views is less than 5)-->
+						<% end %><!-- end of loop -->
+
+						<!-- SECTION link-->
+						<%= link_to "books/needs_love" do %>
+							<div class="col-md-3 profile-index" style=" background-color: #384452; overflow: hidden; min-height: 450px; max-height: 450px;">
+								<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+									<h4 style="font-size: 24pt" class="white_font">
+									Continue Viewing:
+									</h4>
+								</div>
+								<div style="border-bottom: 1px solid white; margin-top:100px; max-width: 260px; max-height: 210px; min-width: 260px; min-height: 210px; font-weight: 800px;" class="test" >
+									<h3> Organizations that need <br> some love </h3>
+									<img src="/assets/forward.png">
+									
+								</div>
+								<div style=" overflow: hidden; white-space: normal; text-align: left; padding-bottom: 20px; padding-top: 10px;" > 
+									This quick link will bring you to a place full of the
+									<text class="orange_font">Organizations that aren't getting much attention</text>
+								</div>
+							</div>
+						<% end %><!-- end of SECTION link-->
+					</div>
+				</div>	<!-- end- needs love -->
+
+				<!-- Favorites of the day -->
+				<div  id="fav_divs_main_div" class="container testimonial-group">
+					<!-- dont shoe title if no content will be in it -->
+					<h1 style="color: orange;  margin-left: -10px;">
+						Favorites of the day
+						<i>
+							<text style="font-size: 11pt; color: black;">
+								- Organizations that everyone's interacting with today
+							</text>
+						</i>
+					</h1>
+					
+					<div id="fav_divs_in_here" class="row text-center scrollBar_nice2">
+						<% @books.limit(100).each do |book| %>
+							<!-- getting the daily view count of the current organization being looped -->
+							<% @tempb = book.impressionist_count(:start_date=>Date.today) %>
+							<!-- output the info if that daily count is less than 10 -->
+							<% if @tempb >= 10 %>
+								<%= link_to book_path(book) do %>
+									<div class="col-md-3 profile-index moveUpOnHover grad3" style="overflow: hidden; min-height: 450px; max-height: 450px;">
+										<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+											<h4 style="font-size: 14pt">
+											<%= truncate(book.title, :length => 27, :omission => '...')%>
+											</h4>
+										</div>
+										<div style="border-bottom: 1px solid red; margin-bottom:10px; max-width: 260px; max-height: 260px; min-width: 260px; min-height: 260px;" class="test" >
+												<!-- default image -->
+												<% if File.exist?(book.my_file.thumb.path.to_s) %>
+													<%= image_tag book.my_file.thumb.url, class: "org_img" %>
+												<% else %>
+													<img src="/default_org_img.png">
+												<% end %>
+										<br><br>
+									</div>
+										<div style=" max-height: 100px; min-height: 100px; overflow: hidden; white-space: normal; text-align: left;"> 
+											<%=  truncate(book.description, :length => 130, :omission => '... (continued)') %>
+										</div>
+										<% if user_signed_in? %>
+											<!-- User has already voted-->
+											<% if @user.voted_as_when_voted_for book %>
+												<%= link_to dislike_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+											    	<span class="glyphicon glyphicon-remove unloveBtn"> </span> 
+												<% end %> <!-- end of link -->
+											<!-- User has NOT voted-->
+											<% else %>
+												<%= link_to like_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+												    <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+												<% end %>
+											<% end %>
+
+										<!-- user not logged in -->
+										<% else %>
+											<%= link_to new_user_session_path do  %>
+												Login to 'Love' <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+											<% end %>
+										<% end %>
+										<!-- output the like count -->
+										&nbsp; (<%= book.get_upvotes.size %> - Reach Reputation)
+									</div>
+								<% end %><!-- end of link-->
+							<% end %><!-- end of check (checked to se if daily views is less than 5)-->
+						<% end %><!-- end of loop -->
+
+						<!-- SECTION link-->
+						<%= link_to "books/favourites_of_the_day" do %>
+							<div class="col-md-3 profile-index" style=" background-color: #384452; overflow: hidden; min-height: 450px; max-height: 450px;">
+								<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+									<h4 style="font-size: 24pt" class="white_font">
+									Continue Viewing:
+									</h4>
+								</div>
+								<div style="border-bottom: 1px solid white; margin-top:100px; max-width: 260px; max-height: 210px; min-width: 260px; min-height: 210px; font-weight: 800px;" class="test" >
+									<h3> Favorites of the day  </h3>
+									<img src="/assets/forward.png">
+									
+								</div>
+								<div style=" overflow: hidden; white-space: normal; text-align: left; padding-bottom: 20px; padding-top: 10px;" > 
+									This quick link will bring you to a place full of the
+									<text class="orange_font">Organizations everyone's interacting with today</text>
+								</div>
+							</div>
+						<% end %><!-- end of SECTION link-->
+					</div>
+				</div>	<!-- end- needs love -->
+				<!-- end- Favorites of the day -->
+
+				<!-- near you -->
+				<div class="container testimonial-group">
+					<% if @orgs_nearby %><!-- verify object not empyy-->
+						<h1 style="color: orange; margin-left: -10px;">
+							Near you (Dublin)
+							<i>
+								<text style="font-size: 11pt; color: black;">
+									- Organizations that are located close to you
+								</text>
+							</i>
+						</h1>
+						<div class="row text-center scrollBar_nice2">
+								<% @orgs_nearby.limit(10).each do |o| %>
+									<%= link_to book_path(o.id) do %>
+										<div class="col-md-3 profile-index moveUpOnHover grad4" style="overflow: hidden; min-height: 450px; max-height: 450px;">
+											<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+												<h4 style="font-size: 14pt">
+												<%= truncate(o.title, :length => 27, :omission => '...')%>
+												<br> (<%= o.distance.round(2) %>  miles)
+												</h4>
+											</div>
+											<div style="border-bottom: 1px solid red; margin-bottom:10px; max-width: 260px; max-height: 260px; min-width: 260px; min-height: 260px;" class="test" >
+												<!-- default image -->
+												<% if File.exist?(o.my_file.thumb.path.to_s) %>
+													<%= image_tag o.my_file.thumb.url, class: "org_img" %>
+												<% else %>
+													<img src="/default_org_img.png">
+												<% end %>
+												<br><br>
+											</div>
+											<div style=" max-height: 100px; min-height: 100px; overflow: hidden; white-space: normal; text-align: left;"> 
+												<%=  truncate(o.description, :length => 130, :omission => '... (continued)') %>
+											</div>
+											<!-- User has already voted-->
+											<% if user_signed_in? %>
+												<% if @user.voted_as_when_voted_for o %>
+													<%= link_to dislike_book_path(o), method: :put, class: "btn btn-xs" do  %> 
+												    	<span class="glyphicon glyphicon-remove unloveBtn"> </span> 
+													<% end %> <!-- end of link -->
+												<!-- User has NOT voted-->
+												<% else %>
+													<%= link_to like_book_path(o), method: :put, class: "btn btn-xs" do  %> 
+													    <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+													<% end %>
+												<% end %>
+											<!-- user not logged in -->
+											<% else %>
+												<%= link_to new_user_session_path do  %>
+													Login to 'Love' <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+												<% end %>
+											<% end %>
+											<!-- output the like count -->
+											&nbsp; (<%= o.get_upvotes.size %> - Reach Reputation)
+										</div>
+									<% end %><!-- end of link-->
+								<% end %><!-- end of loop-->
+
+								<!-- SECTION link-->
+								<%= link_to "books/near_you" do %>
+									<div class="col-md-3 profile-index" style=" background-color: #384452; overflow: hidden; min-height: 450px; max-height: 450px;">
+										<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+											<h4 style="font-size: 24pt" class="white_font">
+											Continue Viewing:
+											</h4>
+										</div>
+										<div style="border-bottom: 1px solid white; margin-top:100px; max-width: 260px; max-height: 210px; min-width: 260px; min-height: 210px; font-weight: 800px;" class="test" >
+											<h3> Near you (Dublin) </h3>
+											<img src="/assets/forward.png">
+											
+										</div>
+										<div style=" overflow: hidden; white-space: normal; text-align: left; padding-bottom: 20px; padding-top: 10px;" > 
+											This quick link will bring you to a place where only
+											<text class="orange_font">Close by Organizations exist</text>
+										</div>
+									</div>
+								<% end %><!-- end of SECTION link-->
+
+						</div><!-- end of div-->
+					<% end %><!-- end-verify object not empyy-->
+				</div><!-- end of container div-->
+				<!-- end-near you -->
+
+				<!-- Not asking for much -->
+				<div class="container testimonial-group">
+					<h1 style="color: orange; margin-left: -10px;">
+						Not asking for much
+						<i>
+							<text style="font-size: 11pt; color: black;">
+								- Organizations that are reaching for something that costs €50 or less
+							</text>
+						</i>
+					</h1>
+					<div class="row text-center scrollBar_nice2">
+						<% @books.each do |b| %>
+							<% @recieve_resource = get_res_by_bookid(b.id) %>
+						  		<% @recieve_resource.each do |r| %>
+							  		<% if r.price <= 50 %>
+								  		<div class="col-md-3 profile-index moveUpOnHover grad5" style="overflow: hidden; min-height: 450px; max-height: 450px;">
+									  		<div tabindex="0" class="onclick-menu">
+								                <div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+													<h4 style="font-size: 14pt">
+													<%= truncate(b.title, :length => 27, :omission => '...')%>
+													<br> (€<%= r.price %>)
+													</h4>
+												</div>
+												<div style="border-bottom: 1px solid red; margin-bottom:10px; max-width: 260px; max-height: 260px; min-width: 260px; min-height: 260px;" class="test" >
+												<!-- default image -->
+												<% if File.exist?(b.my_file.thumb.path.to_s) %>
+													<%= image_tag b.my_file.thumb.url, class: "org_img" %>
+												<% else %>
+													<img src="/default_org_img.png">
+												<% end %>
+													<br><br>
+												</div>
+													<div style=" max-height: 100px; min-height: 100px; overflow: hidden; white-space: normal; text-align: left;"> 
+													<%=  truncate(b.description, :length => 130, :omission => '... (continued)') %>
+												</div>
+												<!-- User has already voted-->
+												<% if user_signed_in? %>
+													<% if @user.voted_as_when_voted_for b %>
+														<%= link_to dislike_book_path(b), method: :put, class: "btn btn-xs" do  %> 
+													    	<span class="glyphicon glyphicon-remove unloveBtn"> </span> 
+														<% end %> <!-- end of link -->
+													<!-- User has NOT voted-->
+													<% else %>
+														<%= link_to like_book_path(b), method: :put, class: "btn btn-xs" do  %> 
+														    <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+														<% end %>
+													<% end %>
+												<!-- user not logged in -->
+												<% else %>
+													<%= link_to new_user_session_path do  %>
+														Login to 'Love' <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+													<% end %>
+												<% end %>
+												<!-- output the like count -->
+											&nbsp; (<%= b.get_upvotes.size %> - Reach Reputation)
+												<ul class="onclick-menu-content" id="other_res_menu2" >
+													<table class="col-md-12 ">
+														  <br>
+														  <tr class="col-md-12 ">
+														    <td>
+															    <text style=" text-transform: capitalize; font-size: 1.6em;">
+															    	Go to Organization:
+															    </text>
+															    <br>
+														    	<text style=" text-transform: capitalize; font-size: 1.4em;">
+														    		<i class="glyphicon glyphicon-arrow-right"></i>
+														    		<%= link_to truncate(b.title, :length => 27, :omission => '...'), book_path(r.book_id) %>
+														    	</text>
+															    <br><br><br>
+															    <center style="color: black; font-weight: 600; font-size: 1.1em;">
+															    	or
+															    </center>
+															    <br><br>
+														    </td>
+														    <td></td>
+														  </tr>
+														  <tr class="col-md-12 ">
+														    <td>
+														    	<text style=" text-transform: capitalize; font-size: 1.2em; font-weight: 600;">
+														    		Go to requested Resource:
+														    	</text>
+														    	<br>
+														    	<text style=" text-transform: capitalize; font-size: 1.1em;">
+														    		<i class="glyphicon glyphicon-arrow-right"></i>
+														    		<%= link_to r.tittle + ' - ', resource_path(r.id) %>
+														    		<text style="font-weight: 700;"> €<%= r.price %> </text>
+														    	</text>
+														    	<br>
+														    	<%= link_to resource_path(r.id) do %>
+														    		<%= image_tag r.image_file.url, class: "res_img_not_asking_much img-responsive col-md-8" %>
+														    	<% end %>
+														    	<br><br><br><br><br><br><br><br>
+														    </td>
+														    <td></td>
+														  </tr>
+														  <tr class="col-md-12 " style="margin-top:30px; font-size: 0.9em;">
+														    <td>
+														    	<i class="glyphicon glyphicon-remove" style="color: red;"></i>
+														    	<a href="" onclick="preventDefault(event);">Or Close this menu</a>
+														    </td>
+														    <td></td>
+														  </tr>
+													</table>	
+												</ul>
+							                </div>
+										</div><!-- end of col 3 (whole div) -->
+							  	<% end %> <!-- end of if statement -->
+						  	<% end %> <!-- end of resource loop -->
+						<% end %><!-- end of org loop -->
+
+						<!-- SECTION link-->
+						<%= link_to "books/not_asking_for_much" do %>
+							<div class="col-md-3 profile-index" style=" background-color: #384452; overflow: hidden; min-height: 450px; max-height: 450px;">
+								<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+									<h4 style="font-size: 24pt" class="white_font">
+									Continue Viewing:
+									</h4>
+								</div>
+								<div style="border-bottom: 1px solid white; margin-top:100px; max-width: 260px; max-height: 210px; min-width: 260px; min-height: 210px; font-weight: 800px;" class="test" >
+									<h3> Not asking for much </h3>
+									<img src="/assets/forward.png">
+									
+								</div>
+								<div style=" overflow: hidden; white-space: normal; text-align: left; padding-bottom: 20px; padding-top: 10px;" > 
+									This quick link will bring you to a place where the
+									<text class="orange_font">Organizations are reaching for something small (€50 or less)</text>
+								</div>
+							</div>
+						<% end %><!-- end of SECTION link-->
+					</div>
+				</div>
+				<!-- ./end - Not asking for much -->
+
+				<!-- most love -->
+				<div class="container testimonial-group">
+					<h1 style="color: orange;  margin-left: -10px;">
+						Most Loved (Highest upvoted organizations today)
+						<i>
+							<text style="font-size: 11pt; color: black;">
+								- Organizations that recieved the most Loves <span class="glyphicon glyphicon-heart loveBtn" style="color: red;"> </span>  today </text></i>
+							</text>
+						</i>
+					</h1>
+					<div class="row text-center scrollBar_nice2">
+						<% @books_by_likes.limit(10).each do |book| %>
+								<%= link_to book_path(book) do %>
+									<div class="col-md-3 profile-index moveUpOnHover grad6" style="overflow: hidden; min-height: 450px; max-height: 450px;">
+										<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+											<h4 style="font-size: 14pt" class="reachReputationNum">
+											<%= truncate(book.title, :length => 27, :omission => '...')%> <br>
+											<i class="glyphicon glyphicon-heart " style="color: red;"></i> <%= book.cached_votes_up %>
+											</h4>
+										</div>
+										<div style="border-bottom: 1px solid red; margin-bottom:10px; max-width: 260px; max-height: 260px; min-width: 260px; min-height: 260px;" class="test" >
+											<!-- default image -->
+											<% if File.exist?(book.my_file.thumb.path.to_s) %>
+												<%= image_tag book.my_file.thumb.url, class: "org_img" %>
+											<% else %>
+												<img src="/default_org_img.png">
+											<% end %>
+										<br><br>
+									</div>
+										<div style=" max-height: 100px; min-height: 100px; overflow: hidden; white-space: normal; text-align: left;"> 
+											<%=  truncate(book.description, :length => 130, :omission => '... (continued)') %>
+										</div>
+										<!-- User has already voted-->
+										<% if user_signed_in? %>
+											<% if @user.voted_as_when_voted_for book %>
+												<%= link_to dislike_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+											    	<span class="glyphicon glyphicon-remove unloveBtn"> </span> 
+												<% end %> <!-- end of link -->
+											<!-- User has NOT voted-->
+											<% else %>
+												<%= link_to like_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+												    <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+												<% end %>
+											<% end %>
+
+										<!-- user not logged in -->
+										<% else %>
+											<%= link_to new_user_session_path do  %>
+											Login to 'Love' <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+										<% end %>
+										<% end %>
+										<!-- output the like count -->
+										&nbsp; (<%= book.get_upvotes.size %> - Reach Reputation)
+									</div>
+								<% end %><!-- end of link-->
+						<% end %><!-- end of loop -->
+
+						<!-- SECTION link-->
+						<%= link_to "books/needs_love" do %>
+							<div class="col-md-3 profile-index" style=" background-color: #384452; overflow: hidden; min-height: 450px; max-height: 450px;">
+								<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+									<h4 style="font-size: 24pt" class="white_font">
+									Continue Viewing:
+									</h4>
+								</div>
+								<div style="border-bottom: 1px solid white; margin-top:100px; max-width: 260px; max-height: 210px; min-width: 260px; min-height: 210px; font-weight: 800px;" class="test" >
+									<h3> Organizations that need <br> are getting all the <br> love today </h3>
+									<img src="/assets/forward.png">
+									
+								</div>
+								<div style=" overflow: hidden; white-space: normal; text-align: left; padding-bottom: 20px; padding-top: 10px;" > 
+									This quick link will bring you to a place full of the
+									<text class="orange_font">most upvoted Organizations today</text>
+								</div>
+							</div>
+						<% end %><!-- end of SECTION link-->
+					</div>
+				</div>	<!-- end- most love -->
+			<!-- end- +++++++++++ SECTIONS +++++++++++ -->
+		<% end %><!-- end of checking if its category view -->
+<% end %>
+<div style="height: 100px;">&nbsp;</div>
+
+<script>
+function scrollToFeed() {
+	$('html, body').animate({
+	    scrollTop: $(".row").offset().top
+	}, 1100);
+
+	//$('.noOrgsError').hide();
+	removeTheWarning ();
+}
+
+var hasBeenThatLow = false;
+
+function removeTheWarning (){
+	$(window).scroll(function() {
+	    var height = $(window).scrollTop();
+
+	    if(height  > 250) {
+	        console.log(height);
+	        //$('.noOrgsError').hide();
+	        hasBeenThatLow = true;
+	    }
+
+		if(height  < 10 && hasBeenThatLow == true) {
+			$('.noOrgsError').css('visibility', 'hidden');
+			$('.noOrgsError').hide();
+			
+	    }
+	});
+}
+
+//remove favs of the day header if there are no orgs under it -->
+if ( $('#fav_divs_in_here').children().length < 3 ) {
+	//removes the whole container as it is useless 
+     $('#fav_divs_main_div').remove();
+}
+//./ end remove favs of the day header if there are no orgs under it -->
+</script>

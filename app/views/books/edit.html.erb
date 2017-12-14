@@ -1,0 +1,268 @@
+<!-- CHANGE - use rails include tags here. turbolinks -->
+<link rel="stylesheet" href="/assets/jquerymaps.css"> 
+<link rel="stylesheet" href="/assets/demo.css"> 
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="/assets/jquery.ui.addresspicker.js"></script>
+
+<!-- CHANGE - put in css file -->
+<style>
+#imagePreviewHeading { cursor: pointer; cursor: hand; }
+#image-icon { cursor: pointer; cursor: hand; }
+#book_my_file{display: none;}
+#finiahCreatingBtn { cursor: pointer; cursor: hand; }
+#finiahCreatingBtn:hover { background-color: #F89406; }
+#addresspicker_map1{ height: 45px; }
+#chatbot-show-btn{
+  bottom: 290px;
+}
+
+/* make previes image same size as old image */
+.upload-preview img {
+  max-width: 480px;
+  max-height: 420px;
+}
+</style>
+<!-- CHANGE - put in JS file -->
+<!-- Instantly display image before upload-->
+<script>
+	$(document).ready(function(){
+    var preview = $(".upload-preview img");
+    $(".file").change(function(event){
+       var input = $(event.currentTarget);
+       var file = input[0].files[0];
+       var reader = new FileReader();
+       reader.onload = function(e){
+           image_base64 = e.target.result;
+           preview.attr("src", image_base64);
+       };
+       reader.readAsDataURL(file);
+    });
+});
+</script>
+<!-- CHANGE - tidy up that br and stray ul -->
+<h1>Update Organization</h1><ul><br>
+
+<%= simple_form_for @book , :html => { :multipart => true } do |f| %>
+	<!-- top left fields -->
+	<div class="col-sm-6">
+			<!--			Name -->
+			<h4 class="fieldHeader"> Name of the Organization </h4>
+			<%= f.input :title, label: false, :input_html => { :id => 'org_name' }%>
+			<!--			Description -->
+			<h4 id="price" class="fieldHeader"> Description </h4>
+			<%= f.input :description, label: false, :input_html => { :id => 'org_description' } %>
+			<br>
+			<!--			Category -->
+			<div class="col-sm-6" style="border-top: 1px solid gray; ">
+				<br>
+				<center>
+					<div style="margin-left: -14px;">
+						<h4 id="CategoryTitle" class="fieldHeader"> This organization currently belongs to: </h4>
+            <% if @categories %>
+              <% if @book.category %>
+                 <%= select_tag(:category_id, options_for_select(@categories, @book.category.id ))%>
+              <% end %>
+              <%= select_tag(:category_id, options_for_select(@categories))%>
+            <% else %>
+              <%= select_tag(:category_id, options_for_select([["none", "1"], ["none2", "2"]]))%>
+            <% end %>
+					</div>
+				</center>
+			</div>
+			<!--			Image upload -->
+			<div class="col-sm-6" style="border-top: 1px solid gray;">
+				<br>
+				<h4 id="imageTitle" class="fieldHeader text-center"> Add a representing image</h4>
+				<%= f.file_field :my_file, class: "file upload-image" %>
+				<img id="image-icon" src="/assets/image-icon.png" class="img-responsive" style="margin: 0 auto;">
+			</div><!-- end of Image upload -->
+	</div><!--./ end- top left fields -->
+
+	<!-- image preview -->
+	<div class="col-sm-6 upload-preview" style="border-left: 1px solid gray; min-height: 300px;">
+		<h4 id="imagePreviewHeading" class="fieldHeader"> Image preview  - do you want to change it?</h4>
+		
+		<%= image_tag @book.my_file.thumb.url, class: "org_img" %>
+	</div><!-- ./end -image preview -->
+<div class="clearfix"> </div>
+	<!-- bottom section (map and address field -->
+  <!-- CHANGE - remove inline css for rest of this page!! -->
+	<div class="col-sm-6 col-sm-push-3" style="border-top: 1px solid gray; margin-top: 80px; background-color: none; margin-left: -20px; margin-bottom: 100px;">
+
+			<!-- Address field -->
+			<div class="col-sm-12" style="margin-top: 50px;">	
+				<h4 id="addressFieldTitle" class="fieldHeader"> Address - Has <text class="org_name_here"> xxx </text> moved?</h4>
+				<%= f.input :address, label: false, :input_html => { :id => 'addresspicker_map1', :style => "width: 100%;" } %> 
+        <!-- CHANGE - use css instead of br -->
+				<br><br><br>
+				<!--		Submit -->
+				<%= f.submit "Create org", class: "createOrgSubmitBtn", :style => "display: none" %>
+				<div id="finiahCreatingBtn" class="col-sm-12 " style="height: 100%; border-radius: 8px; border: 3px solid #F89406; color: #00b3fe; text-align: center; font-size: 2em; font-weight: 600; padding: 15px; opacity: 0.4;" >
+					<p id="finishCreatingField" >Update <br><br> This organization</p>
+					 <i class="glyphicon glyphicon-floppy-saved" style="padding-top: 10px;"></i>
+				</div>
+			</div><!-- end of adreess field div -->
+	</div><!-- end of col 12 -->
+<% end %> <!-- END OF FORM-->
+
+<script>
+	$( "#addresspicker_map1" ).focusout(function() {
+		$( "#finiahCreatingBtn" ).css("background-color", "#F89406");
+		$( "#finiahCreatingBtn" ).css("color", "white");
+		$( "#finiahCreatingBtn i" ).css("color", "#2ecc71");
+		$( "#finiahCreatingBtn" ).css("opacity", "10");
+	  });
+</script>
+
+
+
+
+<script>
+   var val2;
+   var valCategory;
+   var imageTitle;
+   var addressFieldTitle;
+   var finishCreatingField;
+
+function checkInput (){
+   var val = $('#org_name').val();
+   //temporally store text within name field in here
+   val2 = val;
+  
+  	//if name field has not been filled in
+   if (val == null || val == ""){
+   	val = "Please fill in the <text class='theme_blue'> <b>name </b></text>of the organization before telling us about it."
+    } 
+    //name field would have been filled in to get here
+    else{
+
+   		//construct the string witht the correct values
+      val = "Tell us about " + "<b class='theme_blue'>" + val2 + "</b>" + " - Has anything changed since last time?";
+      valCategory = "<b class='theme_blue'>" + val2 + "</b>" + " currently belongs to:";
+      imageTitle = "Change " + "<b class='theme_blue'>" + val2 + "</b>'s image";
+      addressFieldTitle = "Address - Has " + "<b class='theme_blue'>" + val2 + "</b> moved?";
+   	  finishCreatingField = "Update <br><br> " + "<b class='theme_blue'>" + val2 + "</b>";
+    }
+
+    //output result to screen
+   document.getElementById("price").innerHTML = val;
+   document.getElementById("CategoryTitle").innerHTML = valCategory;
+   document.getElementById("imageTitle").innerHTML = imageTitle;
+   document.getElementById("addressFieldTitle").innerHTML = addressFieldTitle;
+   document.getElementById("finishCreatingField").innerHTML = finishCreatingField;
+   document.getElementsByClassName("org_name_here").innerHTML = val2;
+}
+
+$( document ).ready(function() {
+	checkInput ();
+    $('#org_description').focus(function() 
+    { 
+    	//alert('999'); 
+    	checkInput();
+    });
+});	
+
+
+</script>
+
+
+<script>
+//Instantly display image before upload-
+  $(document).ready(function(){
+    var preview = $(".upload-preview img");
+    
+    $(".file").change(function(event){
+       var input = $(event.currentTarget);
+       var file = input[0].files[0];
+       var reader = new FileReader();
+       reader.onload = function(e){
+           image_base64 = e.target.result;
+           preview.attr("src", image_base64);
+       };
+       reader.readAsDataURL(file);
+    });
+});
+// -end
+
+// image button profie pic uplaod
+$( "#image-icon, #imagePreviewHeading").click(function() {
+    $(".upload-image").click();
+});
+// -end
+
+// image button profie pic uplaod
+$( "#finiahCreatingBtn").click(function() {
+    $(".createOrgSubmitBtn").click();
+});
+// -end
+
+</script>
+
+
+
+<script>
+  $(function() {
+    var addresspicker = $( "#addresspicker" ).addresspicker({
+      componentsFilter: 'country:IE'
+    });
+    var addresspickerMap = $( "#addresspicker_map1" ).addresspicker({
+      regionBias: "ie",
+      language: "en",
+      updateCallback: showCallback,
+      mapOptions: {
+        zoom: 4,
+        center: new google.maps.LatLng(46, 2),
+        scrollwheel: false,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      },
+      elements: {
+        map:      "#map",
+        lat:      "#lat",
+        lng:      "#lng",
+        street_number: '#street_number',
+        route: '#route',
+        locality: '#locality',
+        sublocality: '#sublocality',
+        administrative_area_level_3: '#administrative_area_level_3',
+        administrative_area_level_2: '#administrative_area_level_2',
+        administrative_area_level_1: '#administrative_area_level_1',
+        country:  '#country',
+        postal_code: '#postal_code',
+        type:    '#type'
+      }
+    });
+
+    var gmarker = addresspickerMap.addresspicker( "marker");
+    gmarker.setVisible(true);
+    addresspickerMap.addresspicker( "updatePosition");
+
+    $('#reverseGeocode').change(function(){
+      $("#addresspicker_map1").addresspicker("option", "reverseGeocode", ($(this).val() === 'true'));
+    });
+
+    function showCallback(geocodeResult, parsedGeocodeResult){
+      $('#callback_result').text(JSON.stringify(parsedGeocodeResult, null, 4));
+    }
+    // Update zoom field
+    var map = $("#addresspicker_map1").addresspicker("map");
+    google.maps.event.addListener(map, 'idle', function(){
+      $('#zoom').val(map.getZoom());
+    });
+
+  });
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+

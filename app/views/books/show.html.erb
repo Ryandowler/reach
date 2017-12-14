@@ -1,0 +1,423 @@
+<!-- CHANGE THIS- use rails include tags/remove inline css & js / use css instead of br tags / tidy code /remove duplication (dry) -->
+<br><br><br><br><br>
+<%= link_to root_path, class: "orange_font" do %>
+    <span style="font-size: 3em; margin-top: -30px;" class="glyphicon glyphicon-circle-arrow-left back_to_font_feed_arrow"></span>
+<% end %>
+
+<div class="row">
+	<!--<h2> <%= @book.author %></h2>-->
+	<div class="col-md-4 minus_10">
+		<div class="col-md-12">
+			<!-- default image -->
+			<% if File.exist?(@book.my_file.thumb.path.to_s) %>
+				<%= image_tag @book.my_file.thumb.url, class: "org_img" %>
+			<% else %>
+				<img src="/default_org_img.png">
+			<% end %>
+		</div>
+		<div class="col-md-12 minus_15" style="text-transform: capitalize;"  ><br>	
+			<text class="col-md-12" ><b>Organization Details</b></text>
+			<table class="col-md-12">
+			  <tr>
+			    <td class="col-md-5 " >Organizer: </td>
+			    <td class="col-md-7" ><a href="mailto:"><%= @user.email %></a></td>
+			  </tr>
+			  <tr>
+			    <td class="col-md-5 " >Total Views: </td>
+			    <td class="col-md-7" ><%= "#{@book.impressionist_count}" %></td>
+			  </tr>
+			  <tr>
+			    <td class="col-md-5" >Views Today: </td>
+			    <td class="col-md-7" ><%= "#{@book.impressionist_count(:start_date=>Date.today)}" %></td>
+			  </tr>
+			  <tr>
+			    <td class="col-md-5" >Joined Reach: </td>
+			    <td class="col-md-7" ><%= (@book.created_at).strftime("%B") %> <%= @book.created_at.strftime("%y") %>'</td>
+			  </tr>	
+
+			   <tr>
+			    <td class="col-md-5" >Based in: </td>
+			    <td class="col-md-7"><%= @book.address %></td>
+			  </tr>	
+
+			  <tr>
+			  <!-- displays the org that is closest to it (address)-->
+			  <% if @book.nearbys(10) %>
+			    <td class="col-md-6" >This organization is near: </td>
+				    <% for book in @book.nearbys(10).limit(1) %>
+				    	<td class="col-md-6" ><%= link_to book.title, book %> (<%= book.distance.round(2) %>  miles) </td>
+					<% end %>
+				<% end %>
+			  </tr>	
+
+			   <tr>
+				   <td class="col-md-6" >Toal Reaching amount: </td>
+				   <td class="col-md-5" > 
+					   <!-- initially set to 0 so when counting in array wont recieve the nil:class error (cant count nil object)-->
+					   <% @total_price_for_all_resources = 0 %>
+					   <!-- get the 3 resources assigned to this org -->
+					   <% @recieve_resource = get_res_by_bookid(@book.id).limit(3) %>
+						   <!--  iterate through each resource -->
+						   <% @recieve_resource.each_with_index do |r, index| %>
+						   		<!--  add each resources price together (into this variable) -->
+						   		<% @total_price_for_all_resources += @recieve_resource[index].price   %>
+						   <% end %>
+					   <!--  output total value now that the loop has completed (and added them all together) -->
+					   €<%= @total_price_for_all_resources %>
+				   </td>
+			  </tr>	
+			  <tr>
+			    <td class="col-md-5" >Todays Reach Reputation: </td>
+			    <td class="col-md-7" >
+				    <% if @user.voted_as_when_voted_for @book %>
+						<%= link_to dislike_book_path(@book), method: :put, class: "btn btn-xs" do  %> 
+					    	<span class="glyphicon glyphicon-remove unloveBtn"> </span> 
+						<% end %> <!-- end of link -->
+					<!-- User has NOT voted-->
+					<% else %>
+						<%= link_to like_book_path(@book), method: :put, class: "btn btn-xs" do  %> 
+						    <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+						<% end %>
+					<% end %>
+					<!-- output the like count -->
+					&nbsp; (<%= @book.get_upvotes.size %>)
+				  </tr>	
+					<% if @user.voted_as_when_voted_for @book %>
+						<tr>
+							<td class="col-md-12" style="padding-top: 10px; text-align: center; font-weight: 600;" >
+								You <span class="glyphicon glyphicon-heart" style="color: red; font-size: 1.3em;"> </span> 
+								<%= @book.title %> today 
+							</td>
+						</tr>		
+					<% end %> 
+				</td>
+			</table>
+			<!-- Tools for the org creator (when signed in)-->
+			<div class="col-md-12" >
+				<% if user_signed_in? %>
+					<% if @book.user_id == current_user.id %>
+						<%= link_to "Edit", edit_book_path(@book),  class: "btn btn-info editOrgBtn" %>
+						<%= link_to "Delete", book_path(@book), 
+							method: :delete, 
+							data: { confirm: "Are you sure you want to delete this book?"}, 
+							class: "btn btn-danger deleteOrgBtn" 
+						%>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-8">
+		<p> 
+			<text style="font-size: 2.4em;"> <%= @book.title %> - </text>
+			<% if @book.category %>
+		 		<text style="font-size: 1.4em;"> <%= @book.category.name %></text>
+		 	<% else %>
+		 		No Category Found
+		 	<% end %>
+		</p>
+		<h2> <%= @book.description %></h2>
+
+		<!-- Resourcess -->
+		<h2 style="margin-top: 100px;"> Requested Resources (<%= @resy5.count %>/3)</h2>
+		<!-- If there are resources -->
+		<% if @resy5.present? %>
+		<!-- each with index is like useing a counter variable, it will hold the current iteration of the loop (used to get each resources price-->
+			<% @resy5.each_with_index do |r, index| %>
+			<%= link_to resource_path(r) do %>
+			    <div class="col-lg-4 col-sm-4 minus_10">
+			      	<div class="circle-tile ">
+						<div class="circle-tile-heading dark-blue" style="overflow: hidden;">
+							<!-- default image -->
+							<% if File.exist?(r.image_file.path.to_s) %>
+								<%= image_tag r.image_file.url, class: "resource-img" %>
+							<% else %>
+								<img src="/default_resource_img.png">
+							<% end %>
+						</div>
+				        <div class="circle-tile-content dark-blue">
+					        <text style="color: white;">
+					        	<%= truncate(r.tittle, :length => 27, :omission => '...') %> (€<%= @recieve_resource[index].price %>)
+					        </text><br><br>
+					        <div class="text-faded" style="min-height: 60px; 
+					        							   max-height: 60px; overflow: hidden;">
+					        	<%= truncate(r.reason, :length => 84, :omission => '...') %> 
+					        </div><br> 
+					        <div class="circle-tile-footer circle-tile-number" style="bottom:0;">
+					        	More Info | Buy <i class="fa fa-chevron-circle-right"></i>
+					        </div>
+				        </div>
+			      </div>
+			    </div>
+			<% end %>
+		<% end %>
+		<!-- If there are NOT any resources -->
+		<% elsif @resy5.present? == false && user_signed_in? && @book.user_id == current_user.id %>
+			<%= link_to new_resource_path(:tittleP => @book.id) do %>
+			    <div class="col-lg-4 col-sm-4 minus_10">
+			      	<div class="circle-tile ">
+						<div class="circle-tile-heading dark-blue" style="">
+							<i class="glyphicon glyphicon-plus" style="font-size: 40px; margin-top:22%; margin-left:2%;" ></i>
+						</div>
+						<div class="circle-tile-content dark-blue">
+							<div style="color: grey;"> Add 
+								<text style="color: white;"> 
+									<span style="padding-right: 3px; padding-left: 3px;"> First </span> 
+								</text>  
+								resource for 
+							</div><br>
+						 	<div class="text-faded" style="color: orange; min-height: 60px; max-height: 60px; overflow: hidden;"><%= @book.title %>
+						 	</div><br>
+							<div class="circle-tile-footer circle-tile-number" href="#">Create New <i class="fa fa-chevron-circle-right"></i></div>
+						</div>
+			        </div>
+			    </div>
+			<% end %>
+		<!-- the org doesnt have any resources -->
+		<% else %>
+			<div class="col-lg-4 col-sm-4 minus_10">
+			      	<div class="circle-tile ">
+						<div class="circle-tile-content dark-blue">
+						<div class="text-faded" style="color: orange; min-height: 60px; max-height: 60px; overflow: hidden;"><%= @book.title %>
+						 	</div>
+							<div> 
+								<text style="color: white;"> 
+									<span style="padding-right: 3px; padding-left: 3px;"> Is Currently Not Reaching For Any Resources</span> 
+								</text>   
+							</div><br>
+						</div>
+			        </div>
+			    </div>
+		<% end %>
+		<!-- If there are resources BUT there is less than 3 -->
+		<% if @resy5.count > 0 && @resy5.count < 3 && user_signed_in? && @book.user_id == current_user.id %>
+			<%= link_to new_resource_path(:tittleP => @book.id) do %>
+			    <div class="col-lg-4 col-sm-4">
+			      	<div class="circle-tile ">
+						<div class="circle-tile-heading dark-blue" style="">
+							<i class="glyphicon glyphicon-plus" style="font-size: 40px; margin-top:22%; margin-left:2%;" ></i>
+						</div>
+						<div class="circle-tile-content dark-blue">
+							<div style="color: grey;"> Add 
+								<text style="color: white;"> 
+									<span style="padding-right: 3px; padding-left: 3px;"> New </span>
+								</text> resource for  
+							</div><br>
+						 	<div class="text-faded" style="color: orange; min-height: 60px; 
+						 								   max-height: 60px; overflow: hidden;">
+						 		<%= @book.title %>
+						 	</div> <br>
+							<div class="circle-tile-footer circle-tile-number" href="#">Create New 
+								 <i class="fa fa-chevron-circle-right"></i>
+							</div>
+						</div>
+			        </div>
+			    </div>
+			<% end %>
+		<% end %>
+
+		<!-- Donate -->
+		<div class="col-md-12" style="padding-top: 35px;">
+			<div class="col-md-6" style="margin-left: -30px; background-color: none;">
+			<h2 style=""> Choose to Donate a sum </h2>
+				<div class="input-group number-spinner col-md-10">
+					<span class="input-group-btn">
+						<button class="btn btn-default" data-dir="dwn" onclick="moneySliderChangedDown();"><span class="glyphicon glyphicon-minus"></span></button>
+					</span>
+					 <span class="input-group-addon" style="color: green;">€</span>
+					<input type="text" id="donateVal" class="form-control text-center" value="0">
+					<span class="input-group-btn">
+						<button class="btn btn-default" data-dir="up" onclick="moneySliderChangedUp();"><span class="glyphicon glyphicon-plus"></span></button>
+					</span>
+				</div>
+			</div>
+
+	    	<div class="col-md-5 text-center"  style=" background-color: none; margin-top: 20px;">
+	            <button type="button" class="btn btn-hot text-uppercase btn-lg" style="width: 60%; height: 80px;" onclick="donateBtnClicked();">
+	            	Donate 
+	            	<span class="glyphicon glyphicon-heart" aria-hidden="true"></span><br>
+	            	€<text id="moneyText_onBtn">0</text>
+	            </button>
+	        </div>
+        </div>
+	</div><!-- ./ col-md-8 -->
+</div> <!-- end of row -->
+
+<div style="display: none;">
+	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+	<input type="hidden" name="cmd" value="_xclick">
+	<input type="hidden" name="business" value="<%= @user.email %>">
+	<input type="hidden" name="lc" value="IE">
+	<input type="hidden" name="item_name" value="Reach Donation">
+	<input type="hidden" name="amount" id="donate_amount" value="0">
+	<input type="hidden" name="currency_code" value="EUR">
+	<input type="hidden" name="button_subtype" value="services">
+	<input type="hidden" name="no_note" value="0"> 	
+	<input type="hidden" name="cn" value="Add special instructions to the Organization:">
+	<input type="hidden" name="no_shipping" value="1">
+	<input type="hidden" name="rm" value="1">
+	<input type="hidden" name="return" value="http://localhost:3000/">
+	<input type="hidden" name="cancel_return" value="http://localhost:3000/books/payment_cancel">
+	<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
+	<input type="hidden" name="cbt" value="Back to Reach">
+	<input id="pp_buyBtn" type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+	<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+	</form>
+</div>
+<div style="height: 200px;"> &nbsp; </div>
+
+<!-- put this in css file -->
+<style>
+	.resource-img{
+		width:100%;
+		height:100%;
+	}
+	.minus_10{ margin-left: -10px }
+	.minus_15{ margin-left: -15px }
+	.minus_20{ margin-left: -20px }
+
+	/* donate button styles*/
+	.btn{
+
+	    box-shadow: 1px 1px 5px #888888;
+	}
+
+	.btn-xs{
+	    font-weight: 300;
+	}
+	   
+	.btn-hot {
+	color: #fff;
+	background-color: #db5566;
+	border-bottom:2px solid #af4451;
+	}
+
+	.btn-hot:hover, .btn-sky.active:focus, .btn-hot:focus, .open>.dropdown-toggle.btn-hot {
+	color: #fff;
+	background-color: #df6a78;
+	border-bottom:2px solid #b25560;
+	outline: none;}
+
+
+	.btn-hot:active, .btn-hot.active {
+	color: #fff;
+	background-color: #c04b59;
+	border-top:2px solid #9a3c47;
+	margin-top: 2px;
+	}
+
+	.btn-sunny {
+	color: #fff;
+	background-color: #f4ad49;
+	border-bottom:2px solid #c38a3a;
+	}
+
+	.btn-sunny:hover, .btn-sky.active:focus, .btn-sunny:focus, .open>.dropdown-toggle.btn-sunny {
+	color: #fff;
+	background-color: #f5b75f;
+	border-bottom:2px solid #c4924c;
+	outline: none;
+	}
+
+	.btn-sunny:active, .btn-sunny.active {
+	color: #fff;
+	background-color: #d69840;
+	border-top:2px solid #ab7a33;
+	margin-top: 2px;
+	}
+
+	.btn-fresh {
+	color: #fff;
+	background-color: #51bf87;
+	border-bottom:2px solid #41996c;
+	}
+
+	.btn-fresh:hover, .btn-sky.active:focus, .btn-fresh:focus, .open>.dropdown-toggle.btn-fresh {
+	color: #fff;
+	background-color: #66c796;
+	border-bottom:2px solid #529f78;
+	outline: none;
+	}
+
+	.btn-fresh:active, .btn-fresh.active {
+	color: #fff;
+	background-color: #47a877;
+	border-top:2px solid #39865f;
+	outline: none;
+	outline-offset: none;
+	margin-top: 2px;
+	}
+
+	.btn-sky {
+	color: #fff;
+	background-color: #0bacd3;
+	border-bottom:2px solid #098aa9;
+	}
+
+	.btn-sky:hover,.btn-sky.active:focus, .btn-sky:focus, .open>.dropdown-toggle.btn-sky {
+	color: #fff;
+	background-color: #29b6d8;
+	border-bottom:2px solid #2192ad;
+	outline: none;
+	}
+
+	.btn-sky:active, .btn-sky.active {
+	color: #fff;
+	background-color: #0a97b9;
+	border-top:2px solid #087994;
+	outline-offset: none;
+	margin-top: 2px;
+	}
+
+	.btn:focus,
+	.btn:active:focus,
+	.btn.active:focus {
+	    outline: none;
+	    outline-offset: 0px;
+	}
+	}
+	/* end- donate button styles*/
+</style>
+
+<!-- code for money spinner CHANGE - extract this too!! -->
+<script>	
+$(document).on('click', '.number-spinner button', function () {    
+	var btn = $(this),
+		oldValue = btn.closest('.number-spinner').find('input').val().trim(),
+		newVal = 0;
+	
+	if (btn.attr('data-dir') == 'up') {
+		newVal = parseInt(oldValue) + 5;
+	} else {
+		if (oldValue >=0) {
+			newVal = parseInt(oldValue) - 5;
+		} else {
+			newVal = 0;
+		}
+	}
+	btn.closest('.number-spinner').find('input').val(newVal);
+});
+//end- code for money spinner
+
+//update donate button from money slider change
+var a = 0;
+	function moneySliderChangedUp(){
+		var value = $( '#donateVal' ).val();
+		 a = parseInt(value);
+		a += 5;
+		$( "#moneyText_onBtn" ).text( a );
+	}
+
+	function moneySliderChangedDown(){
+		var value = $( '#donateVal' ).val();
+		 a = parseInt(value);
+		a -= 5;
+		$( "#moneyText_onBtn" ).text( a );
+	}
+
+	//passes the current spinner value to the paypal code and runs the paypal process
+	function donateBtnClicked(){
+		$('#donate_amount').val(a);
+		$('#pp_buyBtn').click();
+	}
+</script>

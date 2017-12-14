@@ -1,0 +1,16 @@
+<h1 id="newResourcTitle">New Resource </h1>
+<%= render 'form' %>
+<%= link_to 'Back', resources_path %>
+<script>
+	$(document).ready(function(){
+		var postedVal = $('#book_id').find("option:selected").text();
+	    document.getElementById("newResourcTitle").innerHTML = "New Resource for " + postedVal;
+	});
+
+	$("#book_id").change(function() {
+	var currentSelectedVal = $(this).find("option:selected").text();
+    
+    //document.write("Hello World!");
+    document.getElementById("newResourcTitle").innerHTML = "New Resource for " + currentSelectedVal;
+});
+</script>

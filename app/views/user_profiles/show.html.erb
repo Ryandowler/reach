@@ -1,0 +1,311 @@
+<!-- change everything, variable names, delete sloppy test code, extract css + js, CHANGE HOW CHARTS recieve values ajax maybe --> 
+ <!--Load the AJAX API-->
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<br><br>
+<% $foo = '678y' %>
+<% $foo22 = 'uuuuikjnn599999999' %>
+<% @aa = [] %>
+<% @orgs_views = [] %>
+<% @orgs_views_start_of_week = [] %>
+<% @orgs_views_yesterday = [] %>
+<% @orgs_views_today = [] %>
+
+<% if user_signed_in? %>
+	<center>
+		<h3 class="orange_font"><%= @user.email %>'s Profile</h3>
+		<h5 class="bluefont"><%= @user.find_up_voted_items.size %>/5 Loves Shared Today</h5>
+	</center>   
+	   <td class="col-md-5" > 
+	   <!-- initially set to 0 so when counting in array wont recieve the nil:class error (cant count nil object)-->
+	   <% @total_price_for_all_resources = 0 %>
+	   <!-- get the 3 resources assigned to this org -->
+
+	   <% @user_orgs.each do |o| %>
+	   	    <% o.title %>
+		    <% @recieve_resource = get_res_by_bookid(o.id).limit(3) %>
+			   <!--  iterate through each resource -->
+			   <% @recieve_resource.each_with_index do |r, index| %>
+			   		<!--  add each resources price together (into this variable) -->
+			   		<% @total_price_for_all_resources += @recieve_resource[index].price   %>
+			   <% end %>
+		   	<!--  output total value now that the loop has completed (and added them all together) -->
+			<% @total_price_for_all_resources %> 
+			<% @aa.push(@total_price_for_all_resources.to_i) %>
+			<% @total_price_for_all_resources = 0 %> 
+			<% @orgs_views.push(o.impressionist_count) %>
+			<% @orgs_views_start_of_week.push(o.impressionist_count(:start_date=>Date.today.at_beginning_of_week)) %>
+			<% @orgs_views_yesterday.push(o.impressionist_count(:start_date=>Date.yesterday)) %>
+			<% @orgs_views_today.push(o.impressionist_count(:start_date=>Date.today)) %>
+			<% o.impressionist_count(:start_date=>Date.today.at_beginning_of_week) %>
+			<% o.impressionist_count(:start_date=>Date.yesterday) %>
+			<% o.impressionist_count(:start_date=>Date.today) %>
+		<% end %>
+	   </td>
+		<% @number_of_orrgs = @user_orgs.count %>
+		<% @rr = @user_orgs.limit(10) %>
+	<script>
+
+	//---* make organisation list blink when theres a anchor hash in url *---/
+	var runAlready = false;
+
+	function blink() {
+	   $("#org_list").fadeTo(100, 0.1).fadeTo(200, 1.0);
+	}
+
+	if(window.location.hash && runAlready == false) {
+		runAlready = true;
+		var iterations = 0;
+		var interval = setInterval(foo, 1000);
+		function foo() {
+		iterations++;
+		if (iterations >= 3)
+		    clearInterval(interval);
+			blink();
+		}
+	} 
+	</script>
+<% else %>
+	<center>
+		<h3 class="blue_font">You are not signed in</h3>
+		<%= link_to new_user_session_path do %>
+			<div style="background-color: orange; height: auto; width: 300px;  padding: 30px; text-decoration: none;">
+				<text class="white_font" style=" font-weight: 400; font-size: 3em;">Click here <br> <br> to Log In </text>
+			</div>
+		<% end %>
+	</center>
+<% end %>
+<script>
+
+$(window).load(function() {
+	setTimeout(function() { generateCharts(); }, 1000);
+});
+
+function generateCharts(){
+// this code will run after all other $(document).ready() scripts
+// have completely finished, AND all page elements are fully loaded.
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawChart2);
+      google.charts.setOnLoadCallback(drawChart3);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Organisation');
+        data.addColumn('number', 'Reached amount (€)');
+		if (<%= @rr.count %> >= 10){
+			data.addRows([
+				['<%= @rr[0].title %>', <%= @aa[0] %>],
+				['<%= @rr[1].title %>', <%= @aa[1] %>],
+				['<%= @rr[2].title %>', <%= @aa[2] %>],
+				['<%= @rr[3].title %>', <%= @aa[3] %>],
+				['<%= @rr[4].title %>', <%= @aa[4] %>],
+				['<%= @rr[5].title %>', <%= @aa[5] %>],
+				['<%= @rr[6].title %>', <%= @aa[6] %>],
+				['<%= @rr[7].title %>', <%= @aa[7] %>],
+				['<%= @rr[8].title %>', <%= @aa[8] %>],
+				['<%= @rr[9].title %>', <%= @aa[9] %>]
+			]);
+		}
+		else if (<%= @rr.count %> >= 5){
+			data.addRows([
+				['<%= @rr[0].title %>', <%= @aa[0] %>],
+				['<%= @rr[1].title %>', <%= @aa[1] %>],
+				['<%= @rr[2].title %>', <%= @aa[2] %>],
+				['<%= @rr[3].title %>', <%= @aa[3] %>],
+				['<%= @rr[4].title %>', <%= @aa[4] %>]
+			]);
+		}
+		else if (<%= @rr.count %> >= 3){
+			data.addRows([
+			 ['<%= @rr[0].title %>', <%= @aa[0] %>],
+				['<%= @rr[1].title %>', <%= @aa[1] %>],
+				['<%= @rr[2].title %>', <%= @aa[2] %>]
+			]);
+		}
+		else{
+			data.addRows([
+			 ['You need', 1],
+				['At keast', 2],
+				['Three', 3],
+				['Organizations', 4],
+				['To', 5],
+				['Generate', 6],
+				['A', 7],
+				['Graph', 8]
+			]);
+		}
+        //outputting each org --------note for when come back- i can just output a differnt chunk and manually out in array index for each org but just make it limit by 20
+
+        // Set chart options
+        var options = {'title':'Sum of all Requested resources',
+                       'width':600,
+                       'height':500};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+
+      function drawChart2() {
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Organisation');
+        data.addColumn('number', 'Total views');
+
+		if (<%= @rr.count %> >= 10){
+			data.addRows([
+				['<%= @rr[0].title %>', <%= @orgs_views[0] %>],
+				['<%= @rr[1].title %>', <%= @orgs_views[1] %>],
+				['<%= @rr[2].title %>', <%= @orgs_views[2] %>],
+				['<%= @rr[3].title %>', <%= @orgs_views[3] %>],
+				['<%= @rr[4].title %>', <%= @orgs_views[4] %>],
+				['<%= @rr[5].title %>', <%= @orgs_views[5] %>],
+				['<%= @rr[6].title %>', <%= @orgs_views[6] %>],
+				['<%= @rr[7].title %>', <%= @orgs_views[7] %>],
+				['<%= @rr[8].title %>', <%= @orgs_views[8] %>],
+				['<%= @rr[9].title %>', <%= @orgs_views[9] %>]
+			]);
+		}
+		else if (<%= @rr.count %> >= 5){
+			data.addRows([
+				['<%= @rr[0].title %>', <%= @orgs_views[0] %>],
+				['<%= @rr[1].title %>', <%= @orgs_views[1] %>],
+				['<%= @rr[2].title %>', <%= @orgs_views[2] %>],
+				['<%= @rr[3].title %>', <%= @aa[3] %>],
+				['<%= @rr[4].title %>', <%= @orgs_views[4] %>]
+			]);
+		}
+		else if (<%= @rr.count %> >= 3){
+			data.addRows([
+			 ['<%= @rr[0].title %>', <%= @orgs_views[0] %>],
+				['<%= @rr[1].title %>', <%= @orgs_views[1] %>],
+				['<%= @rr[2].title %>', <%= @orgs_views[2] %>]
+			]);
+		}
+		else{
+			data.addRows([
+			 ['You need', 1],
+				['At keast', 2],
+				['Three', 3],
+				['Organizations', 4],
+				['To', 5],
+				['Generate', 6],
+				['A', 7],
+				['Graph', 8]
+			]);
+		}
+        //outputting each org --------note for when come back- i can just output a differnt chunk and manually out in array index for each org but just make it limit by 20
+
+        // Set chart options
+        var options = {'title':'User Interaction','width':600,'height':500};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+        chart.draw(data, options);
+      }
+
+      //first is first org second params is second org
+      /*
+      function drawChart3() {
+        var data = google.visualization.arrayToDataTable([
+          ['Time scale over presence on Reach', '<%= @rr[0].title %>', '<%= @rr[1].title %>', '<%= @rr[2].title %>', '<%= @rr[3].title %>', '<%= @rr[4].title %>'],
+          ['Last Week',   (<%= @orgs_views_start_of_week[0] %> - <%= @orgs_views_today[0] %>), 
+				          (<%= @orgs_views_start_of_week[1] %> - <%= @orgs_views_today[1] %>), 
+				          (<%= @orgs_views_start_of_week[2] %> - <%= @orgs_views_today[2] %>), 
+				          (<%= @orgs_views_start_of_week[3] %> - <%= @orgs_views_today[3] %>), 
+				          (<%= @orgs_views_start_of_week[4] %> - <%= @orgs_views_today[4] %>)],
+          ['Yesterday', (<%= @orgs_views_yesterday[0] %> - <%= @orgs_views_today[0] %>), 
+      					(<%= @orgs_views_yesterday[1] %> - <%= @orgs_views_today[1] %>),
+      					(<%= @orgs_views_yesterday[2] %> - <%= @orgs_views_today[2] %>),
+      					(<%= @orgs_views_yesterday[3] %> - <%= @orgs_views_today[3] %>),
+      					(<%= @orgs_views_yesterday[4] %> - <%= @orgs_views_today[4] %>)],
+          ['Today',  <%= @orgs_views_today[0] %>, <%= @orgs_views_today[1] %>, <%= @orgs_views_today[2] %>, <%= @orgs_views_today[3] %>, <%= @orgs_views_today[4] %>]
+        ]);
+
+        var options = {
+          title: 'Unique views',
+          hAxis: {title: 'Time scale over presence on Reach',  titleTextStyle: {color: '#333'}},
+          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div3'));
+        chart.draw(data, options);
+      }
+
+      */
+      // remove the hard coded values, uncomment above after new charting done 
+      function drawChart3() {
+        var data = google.visualization.arrayToDataTable([
+          ['Time scale over presence on Reach', '<%= @rr[0].title %>', '<%= @rr[1].title %>', '<%= @rr[2].title %>', '<%= @rr[3].title %>', '<%= @rr[4].title %>'],
+          ['Last Week',   12, 
+				          9, 
+				          8, 
+				          13, 
+				          10],
+          ['Yesterday', 5, 
+      					9,
+      					5,
+      					3,
+      					2],
+          ['Today',  6, 3, 6, 3, 4]
+        ]);
+
+        var options = {
+          title: 'Unique views',
+          hAxis: {title: 'Time scale over presence on Reach',  titleTextStyle: {color: '#333'}},
+          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div3'));
+        chart.draw(data, options);
+      }  
+}
+</script>
+	<br><br><br>
+	<h2 class="blue_font"><a id="org_analytics"></a><u>Analytics</u></h2>
+	<br><br><br>
+    <!--Div that will hold the pie chart-->
+    <div class="col-sm-6">
+	    <h4 ><b>Total Reaching amounts</b> (Limited to 10 for base account)</h4>
+	    <div id="chart_div"></div>
+	</div>
+<div class="col-sm-6">
+	 <h4 ><b>Organization popularity copared to one another </b>(Limited to 10 for base account)</h4>
+    <div id="chart_div2" style="border-left: 2px solid grey;"></div>
+</div>
+
+<div class="col-sm-12" style="border-top: 2px solid grey;">
+	 <center><h4 style="margin-top: 50px;" ><b>Organization performance over the past week</b> (Limited to 2 for base account)</h4></center>
+    <div id="chart_div3" style="width: 100%; height: 500px;"></div>
+</div>
+<!-- remove this -->
+<style>
+	.third{background-color:white; border: 2px solid grey; color: black;} 
+</style>
+
+<div class="col-sm-12" style="border-top: 2px solid grey; margin-top: 50px; padding-bottom: 150px; font-weight: 600;">
+	<h2 class="blue_font" style="margin-top: 30px;"><a id="orgs" class="blue_font"></a><u>Your Organizations:</u></h2>
+	<div id="org_list">
+		<% @user_orgs.each do |o| %>
+			<%= link_to book_path(o) do %>
+				<div class="col-md-3 <%= cycle('orange_bg', 'blue_bg', 'third') -%>" style="border-radius: 4px; max-height: 400px; min-height: 400px;"> 
+					<br>
+					 <%= o.title %>
+					 <br><br>
+					 <%= image_tag o.my_file.thumb.url, class: "org_img2" %><br><br>
+					 Created: <%= o.created_at.strftime("%d/%m/%y") %><br>
+					 Last Updated: <%= o.updated_at.strftime("%d/%m/%y") %>
+				</div>
+			<% end %>
+		<% end %>
+	</div>
+</div>
+<div style="height: 200px;"> &nbsp; </div>
+
+

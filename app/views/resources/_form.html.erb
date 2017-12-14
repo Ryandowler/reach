@@ -1,0 +1,26 @@
+<%= simple_form_for @resource, :html => { :multipart => true } do |f| %>
+  <%= f.error_notification %>
+  <div class="form-inputs">
+  	<!--			Image -->
+	<h4 class="fieldHeader"> Image of resourse</h4>
+	<%= f.file_field :image_file %>
+    <%= f.input :tittle %>
+    <%= f.input :reason %>
+    <%= f.input :price %>
+    <%= f.input :temp_field , :input_html => { :id => 'temp_field' }, label: false %>
+    <%= select_tag(:book_id, options_for_select(@books))%>
+    
+  </div>
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+
+<!-- CHANGE THIS -extract t external files -->
+<style> #temp_field{ display: none; } select{ display: none;} </style>
+<script>
+  //put vposted value fom hidden field into dropdown if its posted sucesfully (not blank)
+  if ($('#temp_field').val() != '' && $('#temp_field').val() != null ) {
+       $('#book_id').val($('#temp_field').val()); 
+  }
+</script>

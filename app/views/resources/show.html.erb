@@ -1,0 +1,888 @@
+<!-- CHANGE - chsnge whole file, nasty looking! -->
+<p id="notice"><%= notice %></p>
+<% @item_name_ready_forPayPal = "Reach-Resource-Purchase: " + @resource.tittle %>
+
+<!-- CHANGE extract css and js -->
+<style>
+*:focus {
+    outline: none;
+}
+.extruding-bottom-bar{
+background-color:#3498db;
+z-index:10;
+
+border-top-left-radius: 12px;
+border-top-right-radius: 12px;
+border-top: 2px solid black;
+border-right: 2px solid black;
+border-left: 2px solid black;
+border-bottom: 2px solid #3498db;
+}
+.resourceTitle{
+margin-top:-10px;
+color:white;
+font-weight:600;
+z-index:12
+}
+
+.resMainImg_div img{
+	margin-top:20px; 
+	margin-bottom:-20px;
+	border-top-left-radius:7px; 
+	border-top-right-radius:7px;
+	max-width:50%;
+	max-height:50%; 
+	width:60%;
+	height:60%;
+	margin-left: 20%;
+}
+
+.bigRoundOtherResourceBtn img{
+	max-width: 115%; max-height: 115%; min-width: 110%; min-height: 110%; margin-left: -15px; margin-top: -5px;
+}
+.topBar{
+	background-color:#3498db; border-top: 2px solid black; border-bottom: 2px solid black; color:white;
+}
+.topBar a{
+	color: white;
+}
+
+/** charity also needs buttons */
+.btn-circle.btn-xl {
+width: 80%;
+height: 80%;
+padding-left: 20% 16%;
+font-size: 24px;
+line-height: 1.33;
+border-radius: 100%;
+overflow: hidden;
+}
+/* purchase this resource button */
+.btn-circle.btn-xl2 {
+width: 40%;
+height: 45%;
+/*padding-left: 20% 16%;*/
+
+font-size: 22px;
+font-weight: 600;
+line-height: 1.13;
+border-radius: 100%;
+overflow: hidden;
+background-color: #2ECC71;
+border: 1px solid black;
+}
+
+
+/* other user have chck out these resources style */
+
+.card {
+padding-top: 20px;
+margin: 10px 0 20px 0;
+background-color: rgba(214, 224, 226, 0.2);
+border-top-width: 0;
+border-bottom-width: 2px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+-webkit-box-shadow: none;
+-moz-box-shadow: none;
+box-shadow: none;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
+
+.card .card-heading {
+padding: 0 20px;
+margin: 0;
+}
+
+.card .card-heading.simple {
+font-size: 20px;
+font-weight: 300;
+color: #777;
+border-bottom: 1px solid #e5e5e5;
+}
+
+.card .card-heading.image img {
+display: inline-block;
+width: 46px;
+height: 46px;
+margin-right: 15px;
+vertical-align: top;
+border: 0;
+-webkit-border-radius: 50%;
+-moz-border-radius: 50%;
+border-radius: 50%;
+}
+
+.card .card-heading.image .card-heading-header {
+display: inline-block;
+vertical-align: top;
+}
+
+.card .card-heading.image .card-heading-header h3 {
+margin: 0;
+font-size: 14px;
+line-height: 16px;
+color: #262626;
+}
+
+.card .card-heading.image .card-heading-header span {
+font-size: 12px;
+color: #999999;
+}
+
+.card .card-body {
+padding: 0 20px;
+margin-top: 20px;
+}
+
+.card .card-media {
+padding: 0 20px;
+margin: 0 -14px;
+}
+
+.card .card-media img {
+max-width: 100%;
+max-height: 100%;
+}
+
+.card .card-actions {
+min-height: 30px;
+padding: 0 20px 20px 20px;
+margin: 20px 0 0 0;
+}
+
+.card .card-comments {
+padding: 20px;
+margin: 0;
+background-color: #f8f8f8;
+}
+
+.card .card-comments .comments-collapse-toggle {
+padding: 0;
+margin: 0 20px 12px 20px;
+}
+
+.card .card-comments .comments-collapse-toggle a,
+.card .card-comments .comments-collapse-toggle span {
+padding-right: 5px;
+overflow: hidden;
+font-size: 12px;
+color: #999;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+
+.card-comments .media-heading {
+font-size: 13px;
+font-weight: bold;
+}
+
+.card.people {
+position: relative;
+display: inline-block;
+width: 170px;
+height: 300px;
+padding-top: 0;
+margin-left: 20px;
+overflow: hidden;
+vertical-align: top;
+}
+
+.card.people:first-child {
+margin-left: 0;
+}
+
+.card.people .card-top {
+position: absolute;
+top: 0;
+left: 0;
+display: inline-block;
+width: 170px;
+height: 150px;
+background-color: #ffffff;
+}
+
+.card.people .card-top.green {
+background-color: #53a93f;
+}
+
+.card.people .card-top.blue {
+background-color: #427fed;
+}
+
+.card.people .card-info {
+position: absolute;
+top: 150px;
+display: inline-block;
+width: 100%;
+height: 101px;
+overflow: hidden;
+background: #ffffff;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
+
+.card.people .card-info .title {
+display: block;
+margin: 8px 14px 0 14px;
+overflow: hidden;
+font-size: 16px;
+font-weight: bold;
+line-height: 18px;
+color: #404040;
+}
+
+.card.people .card-info .desc {
+display: block;
+margin: 8px 14px 0 14px;
+overflow: hidden;
+font-size: 12px;
+line-height: 16px;
+color: #737373;
+text-overflow: ellipsis;
+}
+
+.card.people .card-bottom {
+position: absolute;
+bottom: 0;
+left: 0;
+display: inline-block;
+width: 100%;
+padding: 10px 20px;
+line-height: 29px;
+text-align: center;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
+
+.card.hovercard {
+position: relative;
+padding-top: 0;
+overflow: hidden;
+text-align: center;
+background-color: rgba(214, 224, 226, 0.2);
+}
+
+.card.hovercard .cardheader {
+
+background-size: cover;
+height: 135px;
+}
+
+.card.hovercard .avatar {
+position: relative;
+top: -50px;
+margin-bottom: -50px;
+}
+
+.card.hovercard .avatar img {
+width: 100px;
+height: 100px;
+max-width: 100px;
+max-height: 100px;
+-webkit-border-radius: 50%;
+-moz-border-radius: 50%;
+border-radius: 50%;
+border: 5px solid rgba(64, 64, 64, 0.5);
+}
+
+.card.hovercard .info {
+padding: 4px 8px 10px;
+}
+
+.card.hovercard .info .title {
+margin-bottom: 4px;
+font-size: 24px;
+line-height: 1;
+color: #262626;
+vertical-align: middle;
+}
+
+.card.hovercard .info .desc {
+overflow: hidden;
+font-size: 12px;
+line-height: 20px;
+color: #737373;
+text-overflow: ellipsis;
+}
+
+.card.hovercard .bottom {
+padding: 0 20px;
+margin-bottom: 17px;
+}
+
+.cardheader img {
+width:100%;
+height:100%;
+filter: blur(2px);
+opacity: 0.5;
+filter: alpha(opacity=50); /* For IE8 and earlier */
+overflow: hidden;
+}
+
+/* end- other user have chck out these resources style */
+
+
+
+
+/* floating edit/delete resource menu */
+.animate {
+-webkit-transition: all 0.3s ease-in-out;
+-moz-transition: all 0.3s ease-in-out;
+-o-transition: all 0.3s ease-in-out;
+-ms-transition: all 0.3s ease-in-out;
+transition: all 0.3s ease-in-out;
+}
+
+.navbar-fixed-left {
+position: fixed;
+top: 0px;
+right: 0px;
+border-radius: 0px;
+}
+
+.navbar-minimal {
+width: 60px;		
+min-height: 60px;
+max-height: 100%;
+background-color: rgb(51, 51, 51);
+background-color: rgba(51, 51, 51, 0.8);
+border-width: 0px;
+z-index: 1000;
+}
+
+.navbar-minimal > .navbar-toggler {
+position: relative;
+min-height: 60px;
+border-bottom: 1px solid rgb(81, 81, 81);
+z-index: 100;
+cursor: pointer;
+
+}
+
+.navbar-minimal.open > .navbar-toggler,
+.navbar-minimal > .navbar-toggler:hover {
+background-color: rgb(158, 202, 59);
+}
+
+.navbar-minimal > .navbar-toggler > span {
+position: absolute;
+top: 50%;
+right: 50%;
+margin: -8px -8px 0 0;
+width: 16px;
+height: 16px;
+/*my god please dont look at this below haha -sort this out !!*/
+background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjIuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjMycHgiIHZpZXdCb3g9IjAgMCAxNiAzMiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMzIiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZmlsbD0iI0ZGRkZGRiIgZD0iTTEsN2gxNGMwLjU1MiwwLDEsMC40NDgsMSwxcy0wLjQ0OCwxLTEsMUgxQzAuNDQ4LDksMCw4LjU1MiwwLDgKCVMwLjQ0OCw3LDEsN3oiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiNGRkZGRkYiIGQ9Ik0xLDEyaDE0YzAuNTUyLDAsMSwwLjQ0OCwxLDFzLTAuNDQ4LDEtMSwxSDFjLTAuNTUyLDAtMS0wLjQ0OC0xLTEKCVMwLjQ0OCwxMiwxLDEyeiIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZmlsbD0iI0ZGRkZGRiIgZD0iTTEsMmgxNGMwLjU1MiwwLDEsMC40NDgsMSwxcy0wLjQ0OCwxLTEsMUgxQzAuNDQ4LDQsMCwzLjU1MiwwLDMKCVMwLjQ0OCwyLDEsMnoiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiNGRkZGRkYiIGQ9Ik0xLjMzLDI4Ljk3bDExLjY0LTExLjY0YzAuNDU5LTAuNDU5LDEuMjA0LTAuNDU5LDEuNjYzLDAKCWMwLjQ1OSwwLjQ1OSwwLjQ1OSwxLjIwNCwwLDEuNjYzTDIuOTkzLDMwLjYzM2MtMC40NTksMC40NTktMS4yMDQsMC40NTktMS42NjMsMEMwLjg3MSwzMC4xNzQsMC44NzEsMjkuNDMsMS4zMywyOC45N3oiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiNGRkZGRkYiIGQ9Ik0yLjk5MywxNy4zM2wxMS42NDEsMTEuNjRjMC40NTksMC40NTksMC40NTksMS4yMDQsMCwxLjY2MwoJcy0xLjIwNCwwLjQ1OS0xLjY2MywwTDEuMzMsMTguOTkzYy0wLjQ1OS0wLjQ1OS0wLjQ1OS0xLjIwNCwwLTEuNjYzQzEuNzg5LDE2Ljg3MSwyLjUzNCwxNi44NzEsMi45OTMsMTcuMzN6Ii8+Cjwvc3ZnPgo=);
+background-repeat: no-repeat;
+background-position: 0 0;
+-webkit-transition: -webkit-transform .3s ease-out 0s;
+-moz-transition: -moz-transform .3s ease-out 0s;
+-o-transition: -moz-transform .3s ease-out 0s;
+-ms-transition: -ms-transform .3s ease-out 0s;
+transition: transform .3s ease-out 0s;
+-webkit-transform: rotate(0deg);
+-moz-transform: rotate(0deg);
+-o-transform: rotate(0deg);
+-ms-transform: rotate(0deg);
+transform: rotate(0deg);
+}
+
+.navbar-minimal > .navbar-menu {
+position: absolute;
+top: -1000px;
+left: 0px;
+margin: 0px;
+padding: 0px;
+list-style: none;
+z-index: 50;
+background-color: rgb(51, 51, 51);
+background-color: rgba(51, 51, 51, 0.8);
+}
+.navbar-minimal > .navbar-menu > li {
+margin: 0px;
+padding: 0px;
+border-width: 0px;
+height: 54px;
+}
+.navbar-minimal > .navbar-menu > li > a {
+position: relative;
+display: inline-block;
+color: rgb(255, 255, 255);
+padding: 20px 23px;
+text-align: left;
+cursor: pointer;
+border-bottom: 1px solid rgb(81, 81, 81);
+width: 100%;
+text-decoration: none;
+margin: 0px;
+}
+
+.navbar-minimal > .navbar-menu > li > a:last-child {
+border-bottom-width: 0px;
+}
+.navbar-minimal > .navbar-menu > li > a:hover {
+background-color: rgb(158, 202, 59);
+}
+.navbar-minimal > .navbar-menu > li > a > .glyphicon {
+float: right;
+}
+
+.navbar-minimal.open {
+width: 320px;
+}
+
+.navbar-minimal.open > .navbar-toggler > span {
+background-position: 0 -16px;
+-webkit-transform: rotate(-180deg);
+-moz-transform: rotate(-180deg);
+-o-transform: rotate(-180deg);
+-ms-transform: rotate(-180deg);
+transform: rotate(-180deg);
+}
+
+.navbar-minimal.open > .navbar-menu {
+top: 60px;
+width: 100%;
+min-height: 100%;
+}
+
+@media (min-width: 768px) {
+.navbar-minimal.open {
+	width: 60px;
+}
+.navbar-minimal.open > .navbar-menu {
+	overflow: visible;
+}
+.navbar-minimal > .navbar-menu > li > a > .desc {
+	position: absolute;
+	display: inline-block;
+	top: 50%;
+	left: 130px;
+	margin-top: -20px;
+	margin-left: -250px;
+	text-align: left;
+	white-space: nowrap;
+	padding: 10px 13px;
+	border-width: 0px !important;
+	background-color: rgb(51, 51, 51);
+	background-color: rgba(51, 51, 51, 0.8);
+	opacity: 0;
+}
+.navbar-minimal > .navbar-menu > li > a > .desc:after {
+	z-index: -1;
+	position: absolute;
+	top: 50%;
+	right: -10px;
+	margin-top: -10px;
+	content:'';
+	width: 0;
+	height: 0;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent; 	
+	border-left: 10px solid rgb(51, 51, 51);
+	border-left-color: rgba(51, 51, 51, 0.8);
+}
+.navbar-minimal > .navbar-menu > li > a:hover > .desc {
+	left: 60px;
+	opacity: 1;
+}
+}
+/* end-floating edit/delete resource menu */
+</style>
+
+<% if user_signed_in? %>
+	<% if current_user.id == get_org_by_id(@resource.book_id).user_id %>
+		<div id="floatingEditOptionsMenu">
+		    <nav class="navbar navbar-fixed-left navbar-minimal animate" role="navigation" style="margin-top: 100px;">
+				<div class="navbar-toggler animate">
+					<span class="menu-icon"></span>
+				</div>
+				<ul class="navbar-menu animate">
+					<li>
+						<%= link_to edit_resource_path(@resource) do %>
+						<span class="desc animate"> Edit this resource </span>
+						<span class="glyphicon glyphicon-wrench"></span>
+						<% end %>
+					</li>
+					<li>
+						<%= link_to resource_path(@resource), method: :delete, 
+							data: { confirm: "Are you sure you want to delete this Resource?"} do %>
+						<span class="desc animate"> Delete this resource </span>
+						<span class="glyphicon glyphicon-trash"></span>
+						<% end %>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	<% end %> <!-- check if current user is the owner of the org requesting this resource  -->
+<% end %> <!-- check if user signed in -->
+
+	<div class = "col-sm-12" style="margin-bottom: -2px;">
+		<div class = "col-md-4 col-sm-7 col-md-push-4 col-sm-push-3 resMainImg_div" 
+			 style="max-height:30%; min-height:30%; overflow: hidden;">
+			 <!-- <img style="" src="http://placehold.it/350x150"/> -->
+			<% if File.exist?(@resource.image_file.path.to_s) %>
+				<%= image_tag @resource.image_file.medium.url %>
+			<% else %>
+				<img src="/default_resource_img.png">
+			<% end %>
+			<div class="col-sm-12 extruding-bottom-bar" >&nbsp;</div>
+		</div>	
+	</div>
+	<% if @all_resources_with_same_book_id.count > 1 %>
+		<div class = "col-sm-12 topBar" style="">
+			<% if @other_res_1.id != @resource.id %>
+				<h4 class="col-sm-4" style="text-align: left;"> 
+					< <%= link_to @other_res_1.tittle, resource_path(@other_res_1.id) %> 
+				</h4>
+			<% else %>
+				<h4 class="col-sm-4 " style="text-align: left;"> 
+					< <%= link_to @other_res_3.tittle, resource_path(@other_res_3.id) %>
+				</h4>
+			<% end %>
+			<center><h1 class="col-sm-4 resourceTitle"><%= @resource.tittle %></h1></center>
+				<% if @other_res_2.id != @resource.id %>
+					<h4 class="col-sm-4" style="text-align: right;"> 
+						<%= link_to @other_res_2.tittle, resource_path(@other_res_2.id) %> >
+					</h4>
+				<% else %>
+					<h4 class="col-sm-4" style="text-align: right;"> 
+						<%= link_to @other_res_3.tittle, resource_path(@other_res_3.id) %> >
+					</h4>
+				<% end %>
+		</div> <!-- end of top bar -->
+	 <!-- if there is no other resorces (no side navigate buttons)-->
+	<% else %>
+		<div class = "col-sm-12 topBar" style="">
+			<center><h1 class="col-sm-4 col-sm-push-4 resourceTitle"><%= @resource.tittle %></h1></center>
+		</div> <!-- end of top bar -->
+	<% end %>
+	<!-- about the charity -->
+	<div class = "col-sm-4" style="padding-top:20px;">
+		<div class = "col-sm-8" style="border-bottom: 2px solid #3498db;">
+			<center>
+				<h3 style="width:100%;"> About 
+					<text style="color:#3498db;"><%= link_to @book.title, book_path(@resource.book_id) %></text>
+				</h3>
+			</center>
+		</div>
+		<div class="clearfix"></div><br>
+		<div style="min-height: 130px;"><%= @book.description %> </div>
+		<br>
+		<h4> Organizer: <%= @owner.email %> </h4>
+		<button type="button" style="background-color:#3498db; color:white; font-weight:600;" class="btn btn-default">Contact <%= @owner.email %>  </button>
+	</div>
+	
+	<!-- Donate button -->
+	<div class = "col-sm-4 " style="background-color:none; padding-top:60px; height: 400px;">
+		<div class = "col-sm-3" style="padding-top: 10%;">&nbsp;</div>
+		<div class="clearfix"></div>
+		<div class = "col-sm-3" style="padding-top: 15%;">&nbsp;</div>
+		<button onclick="callPPBtn()" type="button" class="btn btn-circle btn-xl2">
+			BUY NOW <br><br>
+			€ <%= @resource.price %><br>
+			<i class="glyphicon glyphicon-lock"></i><br>
+			<text style="font-size: .5em;">secure</text>
+		</button>
+
+		<div id="paypalButton" style="display: none;">
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+			<input type="hidden" name="cmd" value="_xclick">
+			<input type="hidden" name="business" value="<%= @owner.email %>">
+			<input type="hidden" name="lc" value="IE">
+			<input type="hidden" name="item_name" value="<%= @item_name_ready_forPayPal %>">
+			<input type="hidden" name="amount" value="<%= @resource.price %>">
+			<input type="hidden" name="currency_code" value="EUR">
+			<input type="hidden" name="button_subtype" value="services">
+			<input type="hidden" name="no_note" value="0"> 	
+			<input type="hidden" name="cn" value="Add special instructions to the Organization:">
+			<input type="hidden" name="no_shipping" value="1">
+			<input type="hidden" name="rm" value="1">
+			<input type="hidden" name="return" value="http://localhost:3000/">
+			<input type="hidden" name="cancel_return" value="http://localhost:3000/books/payment_cancel">
+			<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
+			<input type="hidden" name="cbt" value="Back to Reach">
+			<input id="pp_buyBtn" type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+			<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+			</form>
+		</div>
+	</div>
+		
+	<!-- Reason -->
+	<div class = "col-sm-4" style="padding-top:20px;" >
+	<div class = "col-sm-8" style="border-bottom: 2px solid #3498db;"><center><h3 style="width:100%;"> Reason for <text style="color:#3498db;">Reaching</text></h3></center></div>
+		<div class="clearfix"></div><br>
+		<p  style="min-height: 130px;"><%= @resource.reason %> </p> 
+	</div>
+	<div class="clearfix"></div><br>
+	<!-- next line down -->
+	
+	<!-- only show title if there are other resources to sshow -->
+	<% if @all_resources_with_same_book_id.count > 1 %>
+		<!-- The charity ALSO NEEDS -->
+		<div class = "col-sm-2"></div>
+		<div class = "col-sm-2"><h3>_____________________</h3></div>
+		<div class = "col-sm-4" style="">
+
+			<center>
+				<h3><text style="color:#3498db;" ><%= link_to @book.title, book_path(@resource.book_id) %> </text> 		also needs
+				</h3>
+			</center>
+		</div>
+		<div class = "col-sm-2"><h3>_____________________</h3></div>
+		<div class = "col-sm-2"></div>
+	<% end %>
+
+	<!-- also needs -->
+		<% @all_resources_with_same_book_id.first(3).each do |res| %>
+			<% if res.id != @resource.id %>
+				<div class = "col-sm-6" style="background-color: none; height: 250px;">
+					<div class = "col-sm-push-3 col-sm-6" style="background-color: none; height: 250px;">
+						<div class="col-lg-2"> &nbsp; </div>
+						<%= link_to resource_path(res.id) do %>
+							<button class="btn btn-danger btn-circle btn-xl bigRoundOtherResourceBtn" 
+									type="button">
+								<%= image_tag res.image_file.url, :class => "resource-img" %>
+							</button>
+						<% end %>
+						<!-- title of the resource -->
+						<center>
+							<h4> 
+								<%= link_to res.tittle, resource_path(res.id) %>
+							</h4>	
+						</center>	
+					</div><!-- -->
+			    </div><!--close col 6 (whole resource container) -->
+			<% end %><!-- end of if statement-->
+		<% end %><!-- end loop-->
+	<!-- end of also needs section -->
+
+	    <!-- hr -->
+	     <div class = "col-sm-12" style="margin-top: 40px; border-top:1px solid gray;"> &nbsp; </div>
+	     <div class = "col-sm-6 col-sm-push-3" style=" margin-top: 30px; border-bottom:1px solid gray;">
+		     <center>
+				<h3> Resources other users haved checked out </h3>
+			</center>
+	     </div>	     
+	     <div class = "col-sm-12" style="background-color: none; margin-top: 40px;">
+		     <% @other_resources_owned_by_dif_org.each do |res| %>
+			    <div class="col-sm-3 " >
+		            <div class="card hovercard onclickMenuContentID" style="border:1px solid black;">
+		            	<!-- clickable for menu -->
+			            <div tabindex="0" class="onclick-menu">
+			                <div class="cardheader">
+								<% if File.exist?(get_org_by_id(res.book_id).my_file.path.to_s) %>
+									<%= image_tag get_org_by_id(res.book_id).my_file %>
+								<% else %>
+									<img src="/default_org_img.png">
+								<% end %>
+			                </div>
+							<ul class="onclick-menu-content" id="other_res_menu">
+								<table style="width:100%">
+								  <tr>
+								    <td> </td>
+								    <td><%= link_to 'Go to Organization page', book_path(res.book_id) %></td>
+								  </tr>
+								  <tr>
+								    <td> </td>
+								    <td><%= link_to 'Go to Resource page', resource_path(res.id) %></td>
+								  </tr>
+								  <tr>
+								    <td> </td><br> <br>
+								    <td><a href="" onclick="preventDefault(event);"> Close this menu</a></td>
+								  </tr>
+								</table>	
+							</ul>
+		                </div>
+		                <div class="avatar" >
+		                    
+		                    	<% if File.exist?(res.image_file.path.to_s) %>
+									<%= image_tag res.image_file.url %>
+								<% else %>
+									<img src="/default_org_img.png">
+								<% end %>
+		                </div>
+		                <div class="info" id="infoDiv">
+		                    <div class="title" style="padding-top: 10%; font-size:2em;">
+		                        <%= link_to res.tittle, resource_path(res.id) %>
+		                    </div>
+		                    <div class="desc" style="padding-top: 20%;">
+		                    	Requested by: <%= link_to get_org_by_id(res.book_id).title, book_path(res.book_id) %>
+		                    	
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		     <% end %>
+	     </div>
+	    <br><br><br><br><br>
+<script>
+	function callPPBtn(){$('#pp_buyBtn').click();}
+
+	function preventDefault(e) {e.preventDefault();}
+
+	/*side edit/delete menu */
+	$(function () {
+    /* START OF DEMO JS - NOT NEEDED */
+    if (window.location == window.parent.location) {
+        $('#fullscreen').html('<span class="glyphicon glyphicon-resize-small"></span>');
+        $('#fullscreen').attr('href', 'http://bootsnipp.com/mouse0270/snippets/PbDb5');
+        $('#fullscreen').attr('title', 'Back To Bootsnipp');
+    }    
+    $('#fullscreen').on('click', function(event) {
+        event.preventDefault();
+        window.parent.location =  $('#fullscreen').attr('href');
+    });
+    //$('#fullscreen').tooltip();
+    /* END DEMO OF JS */
+    
+    $('.navbar-toggler').on('click', function(event) {
+		event.preventDefault();
+		$(this).closest('.navbar-minimal').toggleClass('open');
+	})
+});
+	/* ./end side edit/delete menu */
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<% @owner.email %>
+<p>
+<% image_tag @resource.image_file.url %>
+  <strong>Tittle:</strong>
+  <% @resource.tittle %>
+</p>
+
+<p>
+  <strong>Reason:</strong>
+  <% @resource.reason %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <% @resource.price %>
+</p>
+
+<text style="font-size: 1.4em;">This resource bellongs to: <%= link_to @resource.book.title, book_path(@resource.book) %></text>
+
+
+<br>
+<br>
+-->
+<!-- <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="ryandowler999@hotmail.com">
+<input type="hidden" name="lc" value="BM">
+<input type="hidden" name="item_name" value="tttt">
+<input type="hidden" name="amount" value="<%= @resource.price %>">
+<input type="hidden" name="currency_code" value="EUR">
+<input type="hidden" name="button_subtype" value="services">
+<input type="hidden" name="no_note" value="0">
+<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHostedGuest">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form> -->
+
+
+
+
+<!--
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="<%= @owner.email %>">
+<input type="hidden" name="lc" value="IE">
+<input type="hidden" name="item_name" value="<%= @item_name_ready_forPayPal %>">
+<input type="hidden" name="amount" value="<%= @owner.email %>">
+<input type="hidden" name="currency_code" value="EUR">
+<input type="hidden" name="button_subtype" value="services">
+<input type="hidden" name="no_note" value="0"> 	
+<input type="hidden" name="cn" value="Add special instructions to the seller:">
+<input type="hidden" name="no_shipping" value="1">
+<input type="hidden" name="rm" value="1">
+<input type="hidden" name="return" value="http://localhost:3000/">
+<input type="hidden" name="cancel_return" value="http://localhost:3000/books/payment_cancel">
+<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
+<input type="hidden" name="cbt" value="Back to Reach">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+-->
+ 
+<!-- used to get cpt 
+ <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="ryandowler99@hotmail.com">
+<input type="hidden" name="lc" value="IE">
+<input type="hidden" name="item_name" value="Reeeee">
+<input type="hidden" name="amount" value="6767.00">
+<input type="hidden" name="currency_code" value="EUR">
+<input type="hidden" name="button_subtype" value="services">
+<input type="hidden" name="no_note" value="0">
+<input type="hidden" name="cn" value="Add special instructions to the seller:">
+<input type="hidden" name="no_shipping" value="1">
+<input type="hidden" name="rm" value="1">
+<input type="hidden" name="return" value="http://localhost:3000/">
+<input type="hidden" name="cancel_return" value="http://localhost:3000/books/payment_cancel">
+<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
+<input type="hidden" name="cbt" value="Back to Reach">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+-->
+
+
+<% link_to 'Edit', edit_resource_path(@resource) %>
+<% link_to 'Back', resources_path %>

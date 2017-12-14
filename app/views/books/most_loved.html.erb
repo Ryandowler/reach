@@ -1,0 +1,55 @@
+<!-- CHANGE THIS- remove inline css & js / use css instead of br tags / tidy code /remove duplication (dry) -->
+<br><br><br><br><br>
+<%= link_to root_path, class: "orange_font", style: "position: fixed;" do %>
+    <span style="font-size: 3em; margin-top: -30px;" class="glyphicon glyphicon-circle-arrow-left back_to_font_feed_arrow"></span>
+<% end %>
+
+<!-- new to Reach -->
+	<div class="container testimonial-group">
+		<h1 style="color: orange; margin-left: -10px;">
+			Most Loved
+			<i><text style="font-size: .6em; color: black;">- Organizations that recieved the most Loves  <span class="glyphicon glyphicon-heart loveBtn" style="color: red;"> </span>  today </text></i>
+		</h1> 
+		<div class="row text-center scrollBar_nice2">
+			<% @books_by_likes.each do |book| %>
+				<%= link_to book_path(book) do %>
+					<div class="col-md-3 profile-index" style="overflow: hidden; min-height: 450px; max-height: 450px; border: 1px solid black; margin: 45px; border-radius: 7px;">
+						<div style="min-height: 50px; max-height: 50px; overflow: hidden;"> 
+							<h4 style="font-size: 14pt" class="reachReputationNum">
+							<%= truncate(book.title, :length => 27, :omission => '...')%> <br>
+							<i class="glyphicon glyphicon-heart " style="color: red;"></i> <%= book.cached_votes_up %>
+							</h4>
+						</div>
+						<div style="border-bottom: 1px solid red; margin-bottom:10px; max-width: 260px; max-height: 260px; min-width: 260px; min-height: 260px;" class="test" >
+							<!-- default image -->
+							<% if File.exist?(book.my_file.thumb.path.to_s) %>
+								<%= image_tag book.my_file.thumb.url, class: "org_img" %>
+							<% else %>
+								<img src="/default_org_img.png">
+							<% end %>
+						<br><br>
+					</div>
+						<div style=" max-height: 100px; min-height: 100px; overflow: hidden; white-space: normal; text-align: left;"> 
+							<%=  truncate(book.description, :length => 130, :omission => '... (continued)') %>
+						</div>
+						<!-- User has already voted-->
+						<% if user_signed_in? %>
+							<% if @user.voted_as_when_voted_for book %>
+								<%= link_to dislike_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+							    	<span class="glyphicon glyphicon-remove unloveBtn"> </span> 
+								<% end %> <!-- end of link -->
+							<!-- User has NOT voted-->
+							<% else %>
+								<%= link_to like_book_path(book), method: :put, class: "btn btn-xs" do  %> 
+								    <span class="glyphicon glyphicon-heart loveBtn"> </span> 
+								<% end %>
+							<% end %>
+						<% end %>
+						<!-- output the like count -->
+						&nbsp; (<%= book.get_upvotes.size %> - Reach Reputation)
+					</div>
+				<% end %><!-- end of link-->
+		<% end %><!-- end of loop -->
+		</div>
+	</div>
+<!-- end- new to Reach -->

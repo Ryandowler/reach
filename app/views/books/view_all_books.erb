@@ -1,0 +1,16 @@
+	<!-- CHANGE THIS- use better variable names-->
+	<!-- If there are resources -->
+	<% if @resy5.present? %>
+		<% @resy5.each do |r| %>
+		    <div class="col-lg-4 col-sm-4">
+		      <div class="circle-tile ">
+		        <a href="#"><div class="circle-tile-heading dark-blue"><i class="fa fa-users fa-fw fa-3x"></i></div></a>
+		        <div class="circle-tile-content dark-blue">
+			          <%= link_to truncate(r.tittle, :length => 27, :omission => '...') , 
+								resource_path(r), class: "circle-tile-description text-faded" %><br>
+		          <div class="text-faded "><%= r.reason %> </div> <br>
+		          <a class="circle-tile-footer circle-tile-number" href="#">More Info | Buy <i class="fa fa-chevron-circle-right"></i></a>
+		        </div>
+		      </div>
+		    </div>
+		<% end %>

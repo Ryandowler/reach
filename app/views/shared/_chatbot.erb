@@ -1,0 +1,97 @@
+<!-- this is the partial that holds the html for the chatbot being calle dthroughout the site -->
+<!-- chatbot -->
+<link href="/assets/floating-btn-styles2.css" rel="stylesheet">
+
+<script type="text/javascript">
+// create the back to top button
+$('body').prepend('<a href="#" id="chatbot-show-btn" class="back-to-top2" onclick="preventDefault(event);">Show chatbot</a>');
+$('body').prepend('<a href="#" id="chatbot-hide-btn" class="back-to-top3" onclick="preventDefault(event);">Hide chatbot</a>');
+
+//when the 'show chatbot' button is pressed
+$('#chatbot-show-btn').click(function() {
+	$('#main-demo-body').css('display', 'block'); //show chatbot
+	$(this).css('display', 'none');		//hide the 'show chatbot' button
+	$('#chatbot-hide-btn').css('display', 'block');
+});
+
+$('#chatbot-hide-btn, #content-right-of-sidebar').click(function() {
+	$('#main-demo-body').css('display', 'none'); //show chatbot
+	$('#chatbot-show-btn').css('display', 'block');		//hide the 'show chatbot' button
+	$('#chatbot-hide-btn').css('display', 'none');
+});
+
+//ryan-duplicate code, remeber DRY. later on when tidying code make one instanceof this instead of here and in show resource
+function preventDefault(e) {
+   e.preventDefault();
+}
+</script>
+<!-- end - chatbot -->
+<!-- remove inline css -->
+<div id="main-demo-body" class="col-md-3 scrollBar_nice3" style="background-color: black; color: white; display: none; position: fixed; max-height: 200px;  overflow-y: scroll; overflow-x: hidden; border-radius: 10px;">
+<div id="speach-to-text-btn" style="background-color: black; margin-bottom: -10px; position: fixed; border-radius: 5px; border: 1px solid white; margin-top: 10px; width: 20px; text-align: center; color: orange;"> <span class="glyphicon glyphicon glyphicon-volume-up" onclick="startConverting();"></span></div>
+	<div class="demo-widget-body"  style="background-color: black;">
+		<h4 style="color: orange;" >
+			<center> Reach assistant</center>
+		</h4>
+		<div id="chatbot">
+			<div id="chatbot-message">
+				<p><span class="user">Bot: </span>Hello <%= name %> how may I assist you?</p>
+				
+				<p id="profileLink" style="display: none;"><span class="user">Bot: </span> 
+					<% if user_signed_in? %>
+						<%= link_to "Here is your profile", user_profile_path(theid), :anchor => "orgs" %>
+					<% else %>
+						<a href="/users/sign_in">It looks like you are not signed in, click here to sign in </a>
+					<% end %>
+				</p>
+				<p id="randomCategory" style="display: none;"><span class="user">Bot: </span> 
+					
+					<a href="books?category=Education"> Here is a random Category </a>
+				</p>
+			</div>
+			<form action="">
+				<div class="input-group" style="">
+					<input id="chatbot-input" type="text" class="form-control" placeholder="message..." autocomplete="off">
+					<div class="input-group-btn" style="padding-bottom: 10px;">
+						<button id="chatbot-submit" class="btn btn-default" type="submit">Send</button>
+					</div>
+				</div><!-- .input-group -->
+			</form>
+		</div><!-- #chatbot -->
+	</div><!-- #demo -->
+</div><!-- #main-demo-body -->
+
+<!-- origional code to get partials working -->
+<!-- <div class="<%= html_class %>">
+  <span class="user">
+    <% name %>
+  </span>
+</div> -->
+
+<script>
+	window.setInterval(function(){
+	  checkIfChatContains();
+	}, 5000);
+
+	function checkIfChatContains(){
+		if ($('#chatbot .from-bot:contains("Retrieving your profile . . .")').length > 0){
+		    //alert('found John Jacon alerhimersh=myth');
+		    $('#profileLink').css('display', 'block');
+
+		    //clone the element that contains the link to profile and put it into the chat window
+		    $( "#profileLink" ).appendTo( "#chatbot-message" );
+		    //make it visible
+		    $('#profileLink').css('display', 'block');
+		   
+		}
+		else if ($('#chatbot .from-bot:contains("Retrieving a random Category . . .")').length > 0){
+		    //alert('found John Jacon alerhimersh=myth');
+		    $('#randomCategory').css('display', 'block');
+
+		    //clone the element that contains the link to profile and put it into the chat window
+		    $( "#randomCategory" ).appendTo( "#chatbot-message" );
+		    //make it visible
+		    $('#randomCategory').css('display', 'block');
+		}
+	}
+	</script>

@@ -1,0 +1,72 @@
+<%= simple_form_for @book , :html => { :multipart => true } do |f| %>
+	<!-- top left fields -->
+	<div class="col-sm-6">
+			<!--			Name -->
+			<h4 class="fieldHeader"> Name of the Organization </h4>
+			<%= f.input :title, label: false, :input_html => { :id => 'org_name' }%>
+
+			<!--			Description -->
+			<h4 id="price" class="fieldHeader"> Description </h4>
+			<%= f.input :description, label: false, :input_html => { :id => 'org_description' } %>
+			<br>
+			<!--			Category -->
+			<div class="col-sm-6" style="border-top: 1px solid gray; ">
+				<br>
+				<center>
+					<div style="margin-left: -14px;">
+						<h4 id="CategoryTitle" class="fieldHeader"> What Category should this belong to </h4>
+						<%= select_tag(:category_id, options_for_select(@categories), :prompt => "Select a Fitting Category")%>
+					</div>
+				</center>
+			</div>
+			<!--			Image upload -->
+			<div class="col-sm-6" style="border-top: 1px solid gray;">
+				<br>
+				<h4 id="imageTitle" class="fieldHeader text-center"> Add a representing image</h4>
+				<%= f.file_field :my_file, class: "file upload-image" %>
+				<img id="image-icon" src="/assets/image-icon.png" class="img-responsive" style="margin: 0 auto;">
+			</div><!-- end of Image upload -->
+	</div><!--./ end- top left fields -->
+
+	<!-- image preview -->
+	<div class="col-sm-6 upload-preview" style="border-left: 1px solid gray; min-height: 300px;">
+		<h4 class="fieldHeader"> Image preview </h4>
+		<img />
+	</div><!-- ./end -image preview -->
+
+	<!-- bottom section (map and address field -->
+	<div class="col-sm-12" style="border-top: 1px solid gray; margin-top: 80px; background-color: none; margin-left: -20px;">
+			<!-- MAP -->
+			<div class="col-sm-6" style="margin-top: 50px;">
+				<div id="map" style="margin-left: 5px; width: 100%;"></div>
+			</div><!-- ./ end- MAP -->
+
+			<!-- Address field -->
+			<div class="col-sm-6" style="margin-top: 50px;">	
+				<h4 id="addressFieldTitle" class="fieldHeader"> Address - Where is it situated?</h4>
+				<%= f.input :address, label: false, :input_html => { :id => 'addresspicker_map', :style => "width: 100%;" } %> 
+				<br><br><br>
+
+				<!--		Submit -->
+				<%= f.submit "Create org", class: "createOrgSubmitBtn", :style => "display: none" %>
+				<div id="finiahCreatingBtn" class="col-sm-6 col-sm-push-6" style="height: 100%; border-radius: 8px; border: 3px solid #F89406; color: #00b3fe; text-align: center; font-size: 2em; font-weight: 600; padding: 15px; opacity: 0.4;" >
+					<p id="finishCreatingField" >
+						Finish creating <br><br> 
+						This organization
+					</p>
+					 <i class="glyphicon glyphicon-floppy-saved" style="padding-top: 10px;"></i>
+				</div>
+			</div><!-- end of adreess field div -->
+	</div><!-- end of col 12 -->
+<% end %> <!-- END OF FORM-->
+
+<script>
+	$( "#addresspicker_map" ).focusout(function() {
+		$( "#finiahCreatingBtn" ).css("background-color", "#F89406");
+		$( "#finiahCreatingBtn" ).css("color", "white");
+		$( "#finiahCreatingBtn i" ).css("color", "#2ecc71");
+		$( "#finiahCreatingBtn" ).css("opacity", "10");
+	  });
+</script>
+
+

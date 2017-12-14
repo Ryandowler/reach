@@ -1,0 +1,500 @@
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+
+/* optional: show position indicator in red */
+
+.scrollBar_nice2::-webkit-scrollbar {
+    width: 5px;
+    height: 0px;
+}
+a:hover {
+    text-decoration: none;
+    font-weight: bold;
+    color: #F89406;
+}
+
+
+body{font-family: 'Roboto', sans-serif;}
+
+.navbar-default {
+	/* added in so when the sidebar is toggled when at top
+	   of page the top pretruding part is hidden behind the nav */
+  z-index: 1200;
+}
+
+
+/* GRADIENT BUTTON */
+.btn-primary.gradient {
+    background: -moz-linear-gradient(top,  #33a6cc 50%, #0099cc 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#33a6cc), color-stop(50%,#0099cc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #33a6cc 50%,#0099cc 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33a6cc', endColorstr='#0099cc',GradientType=0 ); /* IE6-9 */
+}
+.btn-primary.gradient:hover, .btn-primary.gradient:focus, .btn-primary.gradient:active, .btn-primary.gradient.active, .open > .dropdown-toggle.btn-primary {
+    background: -moz-linear-gradient(top,  #66b2cc 50%, #33a6cc 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#66b2cc), color-stop(50%,#33a6cc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #66b2cc 50%,#33a6cc 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#66b2cc', endColorstr='#33a6cc',GradientType=0 ); /* IE6-9 */
+}
+.btn-primary.gradient:active, .btn-primary.gradient.active {
+    background: -moz-linear-gradient(top,  #267c99 50%, #007299 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#267c99), color-stop(50%,#007299)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #267c99 50%,#007299 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #267c99 50%,#007299 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #267c99 50%,#007299 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #267c99 50%,#007299 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#267c99', endColorstr='#007299',GradientType=0 ); /* IE6-9 */
+}
+/* ./ GRADIENT BUTTON */
+
+
+
+/*  somethuing */
+#masthead { 
+ min-height:250px;
+}
+
+
+@media screen and (min-width: 768px) {
+  #masthead h1 {
+    font-size: 50px;
+  }
+}
+
+.affix-top,.affix{
+ position: static;
+ /*background-color: white;*/
+}
+
+@media (min-width: 979px) {
+  #sidebar.affix-top {
+    position: static;
+  	/*margin-top:30px;*/
+  	width:228px;
+  }
+  
+  #sidebar.affix {
+    position: fixed;
+    width:210px;
+  	top:0;
+    bottom: 0;
+  }
+
+  .affix-top{ z-index: 10; }
+
+}
+ /* ----- */
+
+.createOrganizationBtn a { color: yellow; text-decoration: none; font-weight: 600; } 
+		/*overriding this from bootstrap as the above line is being overrode by Bootstrap*/
+		.navbar-default .navbar-nav>li>a {color: orange;}
+
+.theme_blue{
+	color: #4c90ff;
+}
+
+.nav>li>a:focus, .nav>li>a:hover{
+	background-color: green;
+}
+
+
+/* ./ somethuing */
+
+
+
+/* more stuff */
+#info
+{
+	font-size: 18px;
+	color: #555;
+	text-align: center;
+	margin-bottom: 25px;
+}
+
+.scrollbar
+{
+	margin-left: 30px;
+	float: left;
+	height: 300px;
+	width: 65px;
+	background: #F5F5F5;
+	overflow-y: scroll;
+	margin-bottom: 25px;
+}
+
+.force-overflow
+{
+	min-height: 450px;
+}
+
+#wrapper
+{
+	text-align: center;
+	width: 500px;
+	margin: auto;
+}
+
+/*
+ *  STYLE 1
+ */
+
+#style-1::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar
+{
+	width: 9px;
+	background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
+}
+
+
+/* scrollbar fo sidebar */
+.scrollBar_nice::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+.scrollBar_nice::-webkit-scrollbar
+{
+    width: 9px;
+    background-color: #F5F5F5;
+}
+
+.scrollBar_nice::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+}
+/* end- scrollbar fo sidebar */
+
+/* scrollbar fo charity scroll boxes */
+.scrollBar_nice2::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+    border-radius: 5px;
+    background-color: #F5F5F5;
+}
+
+.scrollBar_nice2::-webkit-scrollbar
+{
+    width: 5px;
+    background-color: #F5F5F5;
+}
+
+.scrollBar_nice2::-webkit-scrollbar-thumb
+{
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);
+    background-color: #555;
+}
+
+/* scrollbar chatbot */
+.scrollBar_nice3::-webkit-scrollbar-track
+{   
+    -webkit-box-shadow: inset 0 0 3px rgba(255,153,0,0.3);
+    border-radius: 5px;
+    background-color: white;
+}
+
+.scrollBar_nice3::-webkit-scrollbar
+{
+    width: 5px;
+    background-color: yellow;
+}
+
+.scrollBar_nice3::-webkit-scrollbar-thumb
+{
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 3px rgba(255,153,0,0.3);
+    background-color: orange;
+}
+
+.hideSideBar div:hover a{ -webkit-transform: scale(1.1); padding-right: 40px; padding-left: 13px;font-weight: bold;}
+
+.hideSideBar div:hover span{ -webkit-transform: scale(1.4);  padding-left: 5px; padding-top: 5px;}
+
+
+.blur {
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+}
+
+
+/* ./ more stuff */
+
+
+
+/* Hover on one item and change another */
+#theDiv {position: relative}
+	#theDiv:hover {background: orange; font-weight:600  ;}
+	#theDiv p:hover {background: white}
+	#theDiv p {padding-bottom: 26px}
+	#theDiv #btn {position: absolute; bottom: 0}
+
+	section {position: relative; margin-bottom: 26px}
+	section:hover {background: orange}
+	section p:hover {background: white}
+	section #btn {position: absolute; bottom: -26px}
+
+	/* */
+	.menuitem a {
+    text-decoration: none;
+    display: block;
+    color: #000;
+    padding: 10px 0px 10px 5px;
+}
+/* ./ Hover on one item and change another */
+
+
+
+/*Resource Style*/
+.circle-tile {
+    margin-bottom: 15px;
+    text-align: center;
+}
+.circle-tile-heading {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 100%;
+    color: #FFFFFF;
+    height: 80px;
+    margin: 0 auto -40px;
+    position: relative;
+    transition: all 0.3s ease-in-out 0s;
+    width: 80px;
+}
+.circle-tile-heading .fa {
+    line-height: 80px;
+}
+.circle-tile-content {
+    padding-top: 50px;
+}
+.circle-tile-number {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 5px 0 15px;
+}
+.circle-tile-description {
+    text-transform: uppercase;
+}
+.circle-tile-footer {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    display: block;
+    padding: 5px;
+    transition: all 0.3s ease-in-out 0s;
+}
+.circle-tile-footer:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+}
+.circle-tile-heading.dark-blue:hover {
+    background-color: #2E4154;
+}
+.circle-tile-heading.green:hover {
+    background-color: #138F77;
+}
+.circle-tile-heading.orange:hover {
+    background-color: #DA8C10;
+}
+.circle-tile-heading.blue:hover {
+    background-color: #2473A6;
+}
+.circle-tile-heading.red:hover {
+    background-color: #CF4435;
+}
+.circle-tile-heading.purple:hover {
+    background-color: #7F3D9B;
+}
+.tile-img {
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.9);
+}
+
+.dark-blue {
+    background-color: #34495E;
+}
+.green {
+    background-color: #16A085;
+}
+.blue {
+    background-color: #2980B9;
+}
+.orange {
+    background-color: #F39C12;
+}
+.red {
+    background-color: #E74C3C;
+}
+.purple {
+    background-color: #8E44AD;
+}
+.dark-gray {
+    background-color: #7F8C8D;
+}
+.gray {
+    background-color: #95A5A6;
+}
+.light-gray {
+    background-color: #BDC3C7;
+}
+.yellow {
+    background-color: #F1C40F;
+}
+.text-dark-blue {
+    color: #34495E;
+}
+.text-green {
+    color: #16A085;
+}
+.text-blue {
+    color: #2980B9;
+}
+.text-orange {
+    color: #F39C12;
+}
+.text-red {
+    color: #E74C3C;
+}
+.text-purple {
+    color: #8E44AD;
+}
+
+.text-faded {
+    color: rgba(255, 255, 255, 0.7);
+}
+/* ./ *Resource Style*/
+
+/* click other looked at resource div for choce to go to the org page or to the res page*/
+.onclick-menu {
+    position: relative;
+    display: inline-block;
+}
+.onclick-menu:before {
+    
+}
+.onclick-menu:focus {
+    /* clicking on label should toggle the menu */
+    pointer-events: none;
+}
+.onclick-menu:focus .onclick-menu-content {
+    /*  opacity is 1 in opened state (see below) */
+    opacity: 1;
+    visibility: visible;
+
+    /* don't let pointer-events affect descendant elements */
+    pointer-events: auto;
+    text-align: left;
+}
+.onclick-menu-content {
+    position: absolute;
+    z-index: 1;
+
+    /* use opacity to fake immediate toggle */
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0.5s;
+}
+
+/* end- click other looked at resource div for choce to go to the org page or to the res page*/
+
+/* other viewed resources */
+#other_res_menu{
+    background-color: orange; 
+    min-width: 150%; 
+    min-height: 100%; 
+    top:50%; 
+    margin-left: -40px;
+}
+#other_res_menu2{
+    /*background-color: rgba(255,196,114,0.94);*/
+    background-color: orange;
+    min-width: 150%; 
+    min-height: 100%; 
+    top:0%; 
+    margin-left: -40px;
+}
+#other_res_menu a, #other_res_menu2 a{
+    color: white;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+#other_res_menu a:hover, #other_res_menu2 a:hover{
+    color: #00b3fe;
+    text-decoration: none;
+}
+/* end-     other viewed resources */
+
+
+.res_img_not_asking_much img{
+    max-width: 80%;
+    min-width: 80%;
+}
+/* gradiant */
+.grad1 {
+    background: white; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#f9feff, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#f9feff, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#f9feff, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f9feff, white); /* Standard syntax (must be last) */
+}
+.grad2{
+    background: white; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#dbf9ff, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#dbf9ff, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#dbf9ff, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f4fdff, white); /* Standard syntax (must be last) */
+}
+.grad3{
+    background: white; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#f2faff, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#f2faff, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#f2faff, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f2faff, white); /* Standard syntax (must be last) */
+}
+.grad4{
+    background: white; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#eaf7ff, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#eaf7ff, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#eaf7ff, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#eaf7ff, white); /* Standard syntax (must be last) */
+}
+.grad5{
+    background: white; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#eaf7ff, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#eaf7ff, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#eaf7ff, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#e0f0f9, white); /* Standard syntax (must be last) */
+}
+.grad6{
+    background: white; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#ddf2ff, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#ddf2ff, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#ddf2ff, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#ddf2ff, white); /* Standard syntax (must be last) */
+}
+/* ./ gradiant */

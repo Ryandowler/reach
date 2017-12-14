@@ -1,0 +1,160 @@
+<!-- CHANGE THIS- use rails include tags/remove inline css & js / use css instead of br tags / tidy code /remove duplication (dry) -->
+<link rel="stylesheet" href="/assets/jquerymaps.css"> 
+<link rel="stylesheet" href="/assets/demo.css"> 
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="/assets/jquery.ui.addresspicker.js"></script>
+ 
+<style>
+.bringMeSomeWhereLinks {
+  color: orange;
+  font-size: 1.4em;
+}
+
+#book_my_file{display: none;}
+#finiahCreatingBtn { cursor: pointer; cursor: hand; }
+#finiahCreatingBtn:hover { background-color: #F89406; }
+#addresspicker_map{ height: 45px; }
+#chatbot-show-btn{
+  bottom: 290px;
+}
+
+</style>
+<% if signed_in? %>
+  <h1 style="margin-top: 120px;"> New Organization </h1>
+  <br><br>
+  <%=  render 'form', :book => @book %>
+<% else %>
+<div class="col-md-12">
+  <h1>Sorry, you must be signed in to create an Organization </h1> <br>
+  <h3 style="font-size: 1.7em;">Okay, bring me to: </h3> <br><br>
+  <div class="col-md-2" style="margin-left: -10px;">
+    <h4> <%= link_to 'Front Feed', root_path, :class => 'bringMeSomeWhereLinks' %> </h4>
+    </div>
+    <div class="col-md-4">
+      <h4> <%= link_to "Somewhere to Log In", new_user_session_path, :class => 'bringMeSomeWhereLinks'%></h4>
+    </div>
+  </div>
+<% end %>
+<script>
+function checkInput (){
+   var val = $('#org_name').val();
+   var val2;
+   var valCategory;
+   var imageTitle;
+   var addressFieldTitle;
+   var finishCreatingField;
+  
+  	//if name field has not been filled in
+   if (val == null || val == ""){
+   	val = "Please fill in the <text class='theme_blue'> <b>name </b></text>of the organization before telling us about it."
+    } 
+    //name field would have been filled in to get here
+    else{
+    	//temporally store text within name field in here
+   		val2 = val;
+   		//construct the string witht the correct values
+      val = "Tell us about " + "<b class='theme_blue'>" + val2 + "</b>" + " (Description).";
+      valCategory = "What Category should " + "<b class='theme_blue'>" + val2 + "</b>" + " belong to:";
+      imageTitle = "Add a representing image for " + "<b class='theme_blue'>" + val2 + "</b>";
+      addressFieldTitle = "Address - Where is " + "<b class='theme_blue'>" + val2 + "</b>?";
+   		finishCreatingField = "Finish creating <br><br> " + "<b class='theme_blue'>" + val2 + "</b>";
+    }
+
+    //output result to screen
+   document.getElementById("price").innerHTML = val;
+   document.getElementById("CategoryTitle").innerHTML = valCategory;
+   document.getElementById("imageTitle").innerHTML = imageTitle;
+   document.getElementById("addressFieldTitle").innerHTML = addressFieldTitle;
+   document.getElementById("finishCreatingField").innerHTML = finishCreatingField;
+}
+
+$( document ).ready(function() {
+    $('#org_description').focus(function() 
+    { 
+    	//alert('999'); 
+    	checkInput();
+    });
+});	
+
+//Instantly display image before upload-
+  $(document).ready(function(){
+    var preview = $(".upload-preview img");
+    
+    $(".file").change(function(event){
+       var input = $(event.currentTarget);
+       var file = input[0].files[0];
+       var reader = new FileReader();
+       reader.onload = function(e){
+           image_base64 = e.target.result;
+           preview.attr("src", image_base64);
+       };
+       reader.readAsDataURL(file);
+    });
+});
+// -end
+
+// image button profie pic uplaod
+$( "#image-icon").click(function() {
+    $(".upload-image").click();
+});
+// -end
+
+// image button profie pic uplaod
+$( "#finiahCreatingBtn").click(function() {
+    $(".createOrgSubmitBtn").click();
+});
+// -end
+
+
+$(function() {
+  var addresspicker = $( "#addresspicker" ).addresspicker({
+    componentsFilter: 'country:IE'
+  });
+  var addresspickerMap = $( "#addresspicker_map" ).addresspicker({
+    regionBias: "ie",
+    language: "en",
+    updateCallback: showCallback,
+    mapOptions: {
+      zoom: 4,
+      center: new google.maps.LatLng(46, 2),
+      scrollwheel: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    },
+    elements: {
+      map:      "#map",
+      lat:      "#lat",
+      lng:      "#lng",
+      street_number: '#street_number',
+      route: '#route',
+      locality: '#locality',
+      sublocality: '#sublocality',
+      administrative_area_level_3: '#administrative_area_level_3',
+      administrative_area_level_2: '#administrative_area_level_2',
+      administrative_area_level_1: '#administrative_area_level_1',
+      country:  '#country',
+      postal_code: '#postal_code',
+      type:    '#type'
+    }
+  });
+
+  var gmarker = addresspickerMap.addresspicker( "marker");
+  gmarker.setVisible(true);
+  addresspickerMap.addresspicker( "updatePosition");
+
+  $('#reverseGeocode').change(function(){
+    $("#addresspicker_map").addresspicker("option", "reverseGeocode", ($(this).val() === 'true'));
+  });
+
+  function showCallback(geocodeResult, parsedGeocodeResult){
+    $('#callback_result').text(JSON.stringify(parsedGeocodeResult, null, 4));
+  }
+  // Update zoom field
+  var map = $("#addresspicker_map").addresspicker("map");
+  google.maps.event.addListener(map, 'idle', function(){
+    $('#zoom').val(map.getZoom());
+  });
+
+  });
+  </script>

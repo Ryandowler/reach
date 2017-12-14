@@ -1,0 +1,2 @@
+      invoke  active_record
+      create    db/migrate/20170223215210_add_cached_votes_up_to_books.rb

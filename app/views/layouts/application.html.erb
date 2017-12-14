@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reach</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+
+	<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+	<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+	<%= csrf_meta_tags %>
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<link href="/assets/simple-sidebar.css" rel="stylesheet">
+
+	<!-- back to top -->
+	<link href="/assets/floating-btn-styles.css" rel="stylesheet">
+
+<!-- mic to speach -->
+<script src="http://code.responsivevoice.org/responsivevoice.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css" />
+<!-- end mic to speach -->
+</head> 
+<style>
+/* 
+blue -> #00b3fe
+navy -> #384452
+orange -> #
+
+*/
+.blue_font{ color: #00b3fe; }
+.navy_font{ color: #384452; }
+.white_font{ color: #fcfcfc; }
+.orange_font{ color: #F89406; }
+.orange_bg{ background-color: #F89406;  border: 2px solid grey;}
+.blue_bg{ background-color: #00b3fe; border: 2px solid grey; }
+
+.orange_bg a { color: white; }
+.blue_bg a { color: white; }
+.no_dec{ text-decoration: none; } .no_dec:hover{ text-decoration: none; }
+	
+
+	#listOfOrgs ul.dropdown-cart{min-width:250px; margin-top: 5px;}
+	#listOfOrgs ul.dropdown-cart li .item{
+	    display:block;
+	    padding:3px 10px;
+	    margin: 3px 0;
+	}
+	#listOfOrgs ul.dropdown-cart li .item:hover{background-color:#f3f3f3;}
+	#listOfOrgs ul.dropdown-cart li .item:after{
+	    visibility: hidden;
+	    display: block;
+	    font-size: 0;
+	    content: " ";
+	    clear: both;
+	    height: 0;
+	}
+	#listOfOrgs ul.dropdown-cart li .item-left{float:left;}
+	#listOfOrgs ul.dropdown-cart li .item-left img,
+	#listOfOrgs ul.dropdown-cart li .item-left span.item-info{ float:left; }
+	#listOfOrgs ul.dropdown-cart li .item-left span.item-info{ margin-left:10px; }
+	#listOfOrgs ul.dropdown-cart li .item-left span.item-info span{ display:block; }
+	#listOfOrgs ul.dropdown-cart li .item-right{ float:right; }
+	#listOfOrgs ul.dropdown-cart li .item-right button{  }
+
+	#listOfOrgs ul > .listOfOrgs_li:hover{ background-color: #00b3fe; }
+	.listOfOrgs_li a{ color: white; }
+	.listOfOrgs_li a:hover{ color: orange; text-decoration: none; font-weight: 600;}
+	 .editOrgBtnFromMenu{ color: orange;}
+	 .editOrgBtnFromMenu:hover{ color: white; font-weight: 600; font-size: 1.4em;}
+
+
+	/* 'my organizations' dropdown */
+	.eachOrgInDropdown{
+		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		padding-bottom: 5px;
+	}
+	.OrgImage_InDropdown{
+		background-color: purple; overflow: hidden; 
+		border-radius: 100%; max-height: 70px; max-width: 70px;
+		min-height: 70px; min-width: 70px;
+	}
+	.OrgTitle_InDropdown{
+		margin-left: -10px; overflow: hidden; 
+		max-height: 50px; font-size: 12pt;
+	}
+	/* ./ dropdown */
+
+	/* logo */
+	.logo{
+		width:20%;
+		height:20%;
+	}
+/* sidee barr new */
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #384452;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    z-index: 1300; /* so it overlaps the navbar so the x is visible */
+
+}
+.sidenav li {
+	list-style-type: none;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s
+}
+
+.sidenav a:hover, .offcanvas a:focus{
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    color: orange;
+}
+.closebtn { color: orange;}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+/* ./ end -sidee barr */
+
+/* place holder text */
+ :-moz-placeholder{color: orange;} 
+ :-ms-input-placeholde{color: orange;}
+::-webkit-input-placeholder{color: orange; font-weight: 600; font-size: 1.2em;}
+/* end place holder */
+
+/* navbar */
+	.navbar {
+	min-height: 60px;
+	padding-top: 10px;
+	margin-bottom: 0px;
+	margin-top: -10px;
+}
+
+.navbar-brand {
+	font-family: 'Raleway', sans-serif;
+	font-weight: 900;
+}
+
+.navbar-header .navbar-brand {
+	color: white;
+}
+
+.navbar-default .navbar-nav > li > a {
+	color: white;
+	font-weight: 700;
+	font-size: 12px;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+	color: #00b3fe;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+	color: #00b3fe;
+	background-color: transparent;
+}
+
+.navbar-default {
+	background-color: #384452;
+	border-color: transparent;
+}
+
+.dropdown-menu {
+	background: #384452;
+}
+
+.dropdown-menu > li > a , #navbar-divider-pipe{
+	color: white;
+	font-weight: 700;
+	font-size: 12px;
+}
+#navbar-divider-pipe{
+	margin-top: 12px;
+	padding-left: 20px;
+	padding-right: 20px;
+	color: orange;
+}
+
+/* ./ end navbar */
+
+</style>
+
+<body >
+
+<!-- ryan this is the new sidebar delete old code-->
+<div id="mySidenav" class="sidenav scrollBar_nice countryList">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+ <!--   <ul class="countryList"> -->
+   <input placeholder="Search..." id="s" type="text" style="margin-left: 20px; border-radius: 3px; margin-bottom: 20px; height: 7%;"  /> 
+  <br />
+<li  id="theDiv" class="sidebarLi menuitem" style="border-top: 1px solid white; color: orange;">
+	<%= link_to "FRONT PAGE", root_path, :style=>'color: white;' %>
+</li>
+<% Category.all.each do |category| %>
+	<li id="theDiv"><a href="/books?category=<%= category.name %>"><%= category.name %></a></li>
+<% end %>
+</div>
+
+<script>
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    $( "#showSidebarBtn" ).hide();
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    $( "#showSidebarBtn" ).show();
+}
+
+</script>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button id="burger-menu" type="button" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="/" class=" col-md-9 col-sm-6 hidden-xs" > 
+          	 <img src="/assets/logo13.png" class="img-responsive">
+          </a>
+        </div>
+        <div  id="burger-menu-contents" class="navbar-collapse collapse navbar-right" style="height: auto;">
+          <ul class="nav navbar-nav">
+            <li class="active"><%= link_to "FRONT FEED", root_path, class: "" %></li>
+            <!-- for some strange reason this needs to be here for the my orgs dropdown to work -->
+            <li id="listOfOrgs" class="dropdown" onclick="openOrglist()"> </li>
+
+            <li id="navbar-divider-pipe" class="visible-lg visible-md visible-sm"> | </li>
+
+            <!--show SIGN OUT if user is signed in and show SIGN IN if user is not signed in-->
+			<% if user_signed_in? %>
+				<!-- PROFILE -->
+			  	<li id="listOfOrgs" class="dropdown" onclick="openOrglist()">
+		          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" 
+		          	   role="button" aria-expanded="false" >
+		          	   <i class="glyphicon glyphicon-user"></i> &nbsp; Profile <span class="caret"></span>
+		          	</a>
+					<ul class="dropdown-menu dropdown-cart col-md-12" role="menu">
+						<li class="" role="button"><%= link_to "My Profile", user_profile_path(current_user.id) %></li>
+						<li class="" role="button"><a href="/conversations/6"> Chat Room</a> </li>
+						<li class="" role="button"><%= link_to "Sign Out", destroy_user_session_path, method: :delete %></li>
+					</ul>
+			    </li>
+			    <!-- MY ORGANIZATIONS -->
+	            <li id="listOfOrgs" class="dropdown" onclick="openOrglist()">
+		          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" 
+		          	   role="button" aria-expanded="false" >
+		          	    <i class="glyphicon glyphicon-list-alt"></i> &nbsp; My Organizations <span class="caret"></span>
+		          	</a>
+					<ul class="dropdown-menu dropdown-cart col-md-12" role="menu">
+						<% @app_books3.each do |b| %>
+							<li class="col-md-12 listOfOrgs_li eachOrgInDropdown">
+							  <!-- Image of current org -->
+							  	<div class="col-md-1 OrgImage_InDropdown OrgTitle_InDropdown" style="">
+							  		<%= image_tag b.my_file.tiny.url,:style => "margin-left: -20px" %>
+							   	</div>
+								<div class="col-md-7" style="text-transform: capitalize;">
+									<!-- Links to current org -->
+									<%= link_to truncate(b.title, :length => 23, :omission => '..'), book_path(b.id) %>
+								</div>
+							    <div class="col-md-1" style="padding-top: 20px;">
+							    	<%= link_to '<i class="glyphicon glyphicon-wrench editOrgBtnFromMenu"></i>'.html_safe, 
+							    	{:controller => "books", :action => "edit", :id => b.id } %>
+							    </div>
+							</li>
+						<% end %>
+						<li class="divider"></li>
+						<li> <%= link_to "View all (#{org_count})", 
+							 	 user_profile_path(current_user.id, :anchor => "orgs"), 
+							 	 :class => "text-center"%>
+						</li>
+					</ul>
+			    </li>
+		        <!-- Create new org -->
+				<li id="createNewOrgBtn" role="button">
+					<%= link_to new_book_path do %>
+						<text class="visible-xs"> Create a new organization </text>
+					    <i style="font-size: 1.6em;" class="glyphicon glyphicon-plus"></i>
+					<% end %>
+				</li>
+			<% else %>
+				<li><%= link_to "Sign Up", new_user_registration_path %></li>
+				<li> <%= link_to "Log In", new_user_session_path %></li>
+			<% end %>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <!-- ./ Navigation-->
+
+	<div id="showSidebarBtn" class="toggled hidden-md hidden-sm hidden-xs" 
+		 style="overflow: hidden; margin-top: 320px; z-index: 1100; position: fixed; background-color: orange; cursor: pointer; padding-left: 10px; padding-right: 10px; padding-top: 2px; padding-bottom: 2px; border-radius: 3px; " onclick="openNav();">
+		 <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span><br>
+		 Show
+	</div>
+	
+	<!--sidebar-->
+	<div class="col-md-12" style="margin-top: -20px;  overflow:auto; background-color: white;">
+		<!-- "show sidebar" button -->
+		<div id="showSidebarBtn" class="toggled hidden-md hidden-sm hidden-xs" 
+			 style="overflow: hidden; margin-left: -20px; margin-top: 20px; z-index: 1100; display: none; position: fixed; background-color: orange; cursor: pointer; padding-left: 10px; padding-right: 10px; padding-top: 2px; padding-bottom: 2px; border-radius: 3px; ">
+			 <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span><br>
+			 Show
+		</div>
+		<!--left-->
+		<div id="tt" class="toggled col-md-2 hidden-md hidden-sm hidden-xs" id="leftCol" 
+					 style="overflow: hidden; margin-left: -30px; padding-right: 20px; display: none;">
+			<ul class="nav nav-stacked" id="sidebar">
+				<div id="style-1" style=" width:65%; background-color:#ecf0f1; cursor: pointer; display: none;">
+					<li id="theDiv" class="hideSideBar sidebarLi menuitem" style="float:right; font-size: 10pt; border-radius: 3px; width:40%; ">
+						<div>
+							<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span><br>
+							Hide
+						</div>
+					</li>
+					<br><br><br>
+				</div>
+
+				<div id="sidey" style="height:3000px " style="background-color: black">
+					<div id="style-1" style="overflow:auto; height:30%; width:65%; background-color:#ecf0f1; 						 overflow-x: hidden;">
+						<li  id="theDiv" class="sidebarLi menuitem" style="border-top: 2px solid white;">
+							<%= link_to "ALL", root_path, class: "link" %>
+						</li>
+						<% Category.all.each do |category| %>
+							<li  id="theDiv" class="<%= 'active' if params[:category] == category.name %> sidebarLi menuitem">
+								<%= link_to category.name, books_path(category: category.name), class: "link" %>
+			 				</li>
+						<% end %>
+					</div> 
+				</div> 
+			</ul>
+		</div><!--/left-->
+
+		<!--content (right)-->
+		<div id="content-right-of-sidebar" class="col-lg-12" style="margin-top: 70px;>
+			<div class="" style="overflow: hidden;">
+				<!-- Only try outout an error if there is one, and when there is its okay to pass html structed/styled error-->
+				<p id="error"><%= flash[:error].html_safe unless flash[:error].blank? %> </p>	
+				<p class="notice"><%= notice %></p>
+				<p class="alert"><%= alert %></p>
+				<%= yield %>
+			</div>
+		</div><!--/right-->
+	</div><!--/container-->
+
+    <script>
+    	//tool tips
+	    $("#showSidebarBtn").attr('title', 'Display Sidebar');
+	    $("#style-1").attr('title', 'Remove Sidebar');
+	    $(".editOrgBtn").attr('title', 'This option is only available to you');
+	    $(".deleteOrgBtn").attr('title', 'This option is only available to you');
+	    $("#speach-to-text-btn").attr('title', 'Use this button to verbally speak to the Reach bot');
+	    $(".editOrgBtnFromMenu").attr('title', 'Edit this Organization');
+	    $("#createNewOrgBtn").attr('title', 'Create a new Organization');
+	    $(".back_to_font_feed_arrow").attr('title', 'Go back to Front Feed');
+	    $(".loveBtn").attr('title', 'Love this Organization (5 likes per day)');
+	    $(".unloveBtn").attr('title', 'Un-Love this Organization');
+	    $(".reachReputationNum").attr('title', 'Reach Reputation');
+    	// ./tool tips
+
+    	//hover over sidebar hide/show buttons to change its apearance
+		$( "#showSidebarBtn").hover(function() {
+		  	$(this).css('background-color','#EE178C');
+		});
+		$( "#showSidebarBtn").mouseout(function() {
+	  		$(this).css('background-color','orange');
+		});	
+		// ./
+
+		// --
+	    $( "#showSidebarBtn").click(function() {
+		  	//toggleSidebar();
+		});
+		$( "#style-1").click(function() {
+		  	//toggleSidebar();
+		});
+		// ./
+
+		/* activate sidebar */
+		$('#sidebar').affix({
+		  offset: {
+		    top: 0
+		  }
+		});
+		// ./
+
+		/* open dropdown menu when its clicked */
+		function openOrglist(){
+			$("#listOfOrgs").addClass(" open");
+		}
+		// ./
+
+		// --- sidebar ---
+		// button click makes sidbar go blury and hides it
+		// and removes the blur and shows it on every odd click
+	 	var clickedAway;
+		function toggleSidebar(){
+
+			if (clickedAway == false || clickedAway == null ){
+				$("#tt > ul").addClass( "blur" );
+				$("#tt").animate({width:'toggle'},350);
+				clickedAway = true;
+				$('#content-right-of-sidebar').css('paddingLeft', '200px');
+				//give it almost 1 sec before show the "show sidebar" btn
+				setTimeout(function(){
+				  showHideBtn();
+				}, 800);
+			}
+			else if (clickedAway == true){
+				$('#showSidebarBtn').hide();
+				$("#tt > ul").removeClass( "blur" );
+				$("#tt").animate({width:'toggle'},350);
+				clickedAway = false;
+				$('#content-right-of-sidebar').css('paddingLeft', '20px');
+			}
+		}
+
+		//if anywhere is clicked other than navbar and sidebar itself well then close sidebar (new)
+		$('#content-right-of-sidebar').click(function() {
+		   document.getElementById("mySidenav").style.width = "0";
+		    $( "#showSidebarBtn" ).show();
+		});
+    </script>
+
+<!-- +++ back to top +++ -->
+<script type="text/javascript">
+// create the back to top button
+$('body').prepend('<a href="#" class="back-to-top">Back to Top</a>');
+
+//scroll to top button
+var amountScrolled = 300;
+$(window).scroll(function() {
+	if ( $(window).scrollTop() > amountScrolled ) {
+		$('a.back-to-top').fadeIn('slow');
+	} else {
+		$('a.back-to-top').fadeOut('slow');
+	}
+});
+
+$('a.back-to-top, a.simple-back-to-top').click(function() {
+	$('html, body').animate({
+		scrollTop: 0
+	}, 700);
+	return false;
+});
+</script>
+<!-- end- +++ back to top +++ -->
+
+<h1 id="r"> </h1>
+<script>
+	
+$( document ).ready(function() {
+  $('#s').keyup(function(){
+   var valThis = $(this).val().toLowerCase();
+    $('.countryList>li').each(function(){
+     var text = $(this).text().toLowerCase();
+        (text.indexOf(valThis) == 0) ? $(this).show() : $(this).hide();            
+   });
+  });
+});
+
+var speechresult;
+
+    function startConverting() {
+
+        if ('webkitSpeechRecognition' in window) {
+
+            var speechRecognizer = new webkitSpeechRecognition();
+            speechRecognizer.continuous = true;
+            speechRecognizer.interimResults = true;
+            speechRecognizer.lang = 'en-IN';
+            speechRecognizer.start();
+            var finalTranscripts = '';
+            speechRecognizer.onresult = function(event) {
+                var interimTranscripts = '';
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    var transcript = event.results[i][0].transcript;
+                    transcript.replace("\n", "<br>");
+                    if (event.results[i].isFinal) {
+                    	console.log("finalTranscripts is: " + finalTranscripts);
+                    	console.log("speechresult is: " + speechresult);
+                    	console.log("transcript is: " + transcript);
+                        finalTranscripts += transcript;
+                        speechresult = finalTranscripts;
+                        $('#chatbot-input').val(speechresult); //add the text recieved from voice into chatbot field
+                        $('#chatbot-submit').click();			//click the sedn button to send message to chatbot
+                        console.log('speechresult2->' + speechresult);
+                        if (speechresult) {
+             
+                     //    console.log("q finalTranscripts is: " + finalTranscripts);
+                    	// console.log("q speechresult is: " + speechresult);
+                    	// console.log("q transcript is: " + transcript);
+                    	//-----set values back to blank to inputs dont all get concatinated together-----
+                    	finalTranscripts = '';
+                    	speechresult = '';
+                    	transcript = '';
+                    	break;
+                        }
+                    } else {
+                        interimTranscripts += transcript;
+                    }
+                }
+               
+                //var myNiceVar = finalTranscripts + '<span style="color:#999">' + interimTranscripts + '</span>';
+                 //myNiceVar.appendTo( "#chatbot-message" );
+                 //alert('one');
+                 console.log('log-Reach-bot:-> ' + finalTranscripts + "---" + interimTranscripts);
+            };
+            speechRecognizer.onerror = function(event) {};
+        } else {
+            //r.innerHTML = 'Your browser is not supported. If google chrome, please upgrade!';
+             alert('two');
+        }
+    }
+
+    // -----burger menu mobile-----
+	var ranBurgerToggleAlready = false;
+    //btn was clicked
+    $( "#burger-menu").click(function() {
+		  	toggleBurgerMenu();
+		});
+    //runs when button clicked
+	function toggleBurgerMenu(){
+		//close the mmenu
+		if(ranBurgerToggleAlready){
+			ranBurgerToggleAlready = false;
+			$("#burger-menu-contents").removeClass('in');
+		}
+		//open the menu
+		else{
+			ranBurgerToggleAlready = true;
+			$("#burger-menu-contents").addClass(' in ');
+		}
+	}
+	// ---end----burger menu mobile-----
+</script>
+
+	<!-- chatbot -->
+	<div class="chat-bot-float">
+		<% if @user %>
+		<!-- pass username and html class to be used in the partial -->
+			<%= display_my_html(@user, {html_class: "active"}) %>
+		<% else %>
+		<!-- if user is not signed in or if their username is unavailible-->
+			<%= display_my_html(999) %>
+		<% end %>
+	</div>
+</body>
+
+</html>

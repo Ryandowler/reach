@@ -1,0 +1,57 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	line-height: 150%;
+	background: #eee;
+	position: relative;
+	height: 100%;
+}
+.headerContainer,
+.bodyContainer,
+.footerContainer {
+	max-width: 960px;
+	margin: 0 auto;
+	background: #FFF;
+}
+.padding {
+	padding: 20px;
+}
+.bodyContainer {
+	min-height: 500px;
+}
+a.back-to-top2, a.back-to-top3 {
+	
+	width: 60px;
+	height: 60px;
+	text-indent: -9999px;
+	position: fixed;
+	z-index: 1450;
+	right: 20px;
+	bottom: 20px;
+	background: #59ABE3 url("info.png") no-repeat center 43%;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+}
+a:hover.back-to-top2, a:hover.back-to-top3{
+	background-color: orange;
+}
+a.back-to-top3 {
+	display: none;
+	background: black url("close.png") no-repeat center 43%;
+	width: 60px;
+	height: 60px;
+	}
+
+.chat-bot-float {
+	position: fixed;
+	z-index: 1450;
+	right: 400px;
+	bottom: 250px;
+	
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+}
